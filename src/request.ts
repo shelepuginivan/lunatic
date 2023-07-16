@@ -1,7 +1,7 @@
 import * as http from 'http';
 
 export class Request {
-	private requestParameters: Record<string, string | string[]>
+	private requestParameters: Record<string, string | string[]>;
 
 	constructor(private readonly req: http.IncomingMessage) {
 		this.requestParameters = {};
@@ -16,7 +16,7 @@ export class Request {
 	}
 
 	set params(params: Record<string, string | string[]>) {
-		this.requestParameters = params
+		this.requestParameters = params;
 	}
 
 	get url() {
