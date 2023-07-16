@@ -7,6 +7,10 @@ export class Request {
 		this.requestParameters = {};
 	}
 
+	get method() {
+		return this.req.method;
+	}
+
 	get params() {
 		return this.requestParameters;
 	}
