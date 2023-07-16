@@ -12,4 +12,9 @@ export class Response {
 	end() {
 		this.res.end();
 	}
+
+	json(body: object) {
+		this.res.setHeader('Content-Type', 'application/json');
+		this.res.end(JSON.stringify(body));
+	}
 }
