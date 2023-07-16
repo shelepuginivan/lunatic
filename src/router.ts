@@ -11,7 +11,7 @@ export class Router {
 	}
 
 	private matchRequest = (req: Request, method: HttpMethod, route: string) => {
-		if (req.method !== method) {
+		if (method !== 'any' && req.method !== method) {
 			return false;
 		}
 
