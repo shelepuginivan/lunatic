@@ -1,4 +1,5 @@
 import { Request } from './request';
+import { Response } from './response';
 import { HttpMethod } from './types/http-method';
 import { Middleware } from './types/middleware';
 
@@ -41,4 +42,21 @@ export class Router {
 		req.params = params;
 		return true;
 	};
+
+	protected handle(req: Request, res: Response) {
+		for (let i = 0; i < this.middlewares.length; i++) {
+			const { method, route, handler } = this.middlewares[i];
+
+			if (!this.matchRequest(req, method, route)) {
+				continue;
+			}
+
+			if (handler instanceof Router) {
+				req.url = req.url.replace(route, '/')
+				handler.handle(req, res);
+			} else {
+				handler(req, res);
+			}
+		}
+	}
 }
