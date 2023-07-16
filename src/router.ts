@@ -53,7 +53,7 @@ export class Router {
 			}
 
 			if (handler instanceof Router) {
-				req.url = req.url.replace(route, '/')
+				req.url = req.url.replace(route, '/');
 				handler.handle(req, res);
 			} else {
 				handler(req, res);
