@@ -1,0 +1,38 @@
+{
+	"compilerOptions": {
+		"target": "es2016",
+		"module": "commonjs",
+		"rootDir": "./src",
+
+		"declaration": true,
+		"declarationMap": true,
+		"outDir": "./lib",
+		"removeComments": true,
+		"newLine": "lf",
+		"declarationDir": "./lib",
+
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+
+		"strict": true,
+		"noImplicitAny": true,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"strictBindCallApply": true,
+		"strictPropertyInitialization": true,
+		"noImplicitThis": true,
+		"useUnknownInCatchVariables": true,
+		"alwaysStrict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"skipLibCheck": true
+	},
+	"exclude": [
+		"examples",
+		"lib",
+		"node_modules",
+		"tests"
+	]
+}

@@ -1,0 +1,26 @@
+{
+	"name": "lunatic",
+	"version": "1.0.0",
+	"description": "Node.js backend framework",
+	"main": "./lib/index.js",
+	"types": "lib/index.d.ts",
+	"scripts": {
+		"lint": "eslint --fix src",
+		"build": "tsc"
+	},
+	"exports": {
+		"import": "./lib/index.js",
+		"require": "./lib/index.js"
+	},
+	"keywords": [],
+	"author": "Shelepugin Ivan <shelepuginivan@gmail.com>",
+	"license": "ISC",
+	"devDependencies": {
+		"@types/node": "^20.4.2",
+		"@typescript-eslint/eslint-plugin": "^6.0.0",
+		"@typescript-eslint/parser": "^6.0.0",
+		"eslint": "^8.45.0",
+		"eslint-plugin-simple-import-sort": "^10.0.0",
+		"typescript": "^5.1.6"
+	}
+}
