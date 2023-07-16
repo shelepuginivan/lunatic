@@ -2,6 +2,7 @@ import { Request } from './request';
 import { Response } from './response';
 import { HttpMethod } from './types/http-method';
 import { Middleware } from './types/middleware';
+import { RequestHandler } from './types/request-handler';
 
 export class Router {
 	private readonly middlewares: Middleware[];
@@ -58,5 +59,11 @@ export class Router {
 				handler(req, res);
 			}
 		}
+	}
+
+	public use(route: string, handler: RequestHandler | Router) {
+		this.middlewares.push({ method: 'any', route, handler });
+
+		return this;
 	}
 }
