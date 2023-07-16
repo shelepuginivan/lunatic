@@ -20,7 +20,7 @@ export class Request {
 	}
 
 	get url() {
-		return this.req.url;
+		return this.req.url as string;
 	}
 
 	set url(url: string) {
