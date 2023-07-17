@@ -13,6 +13,18 @@ export class Request {
 		return this.req.method;
 	}
 
+	get headers() {
+		return this.req.headers;
+	}
+
+	on(event: 'data', listener: (chunk: Uint8Array) => void): this;
+	on(event: 'end', listener: () => void): this;
+	on(event: 'error', listener: (error: Error) => void): this;
+	on(event: string, listener: (...args: any[]) => void): this {
+		this.req.on(event, listener);
+		return this;
+	}
+
 	get params() {
 		return this.requestParameters;
 	}
