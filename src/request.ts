@@ -2,9 +2,11 @@ import * as http from 'http';
 
 export class Request {
 	private requestParameters: Record<string, string | string[]>;
+	public readonly originalUrl: string;
 
 	constructor(private readonly req: http.IncomingMessage) {
 		this.requestParameters = {};
+		this.originalUrl = req.url as string;
 	}
 
 	get method() {
