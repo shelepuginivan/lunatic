@@ -54,7 +54,7 @@ export class Router {
 	}
 
 
-	protected handle(req: Request, res: Response, next: NextHandler) {
+	protected handle(req: Request, res: Response, next: NextHandler): void {
 		let i = 0;
 
 		const nextHandler: NextHandler = () => {
@@ -96,7 +96,7 @@ export class Router {
 		method: HttpMethod,
 		route: string,
 		handler: RequestHandler | Router
-	) {
+	): boolean {
 		route = normalizeRoute(route);
 
 		if (method !== 'any' && req.method !== method) {
