@@ -18,6 +18,11 @@ export class Response {
 		this.res.end(JSON.stringify(body));
 	}
 
+	text(body: string) {
+		this.setHeader('Content-Type', 'text/plain');
+		this.res.end(body);
+	}
+
 	setHeader(name: string, value: number | string | string[]) {
 		this.res.setHeader(name, value);
 	}
