@@ -40,6 +40,9 @@ export class Router {
 				const paramLength = urlTokens.length - routeTokens.length;
 				params[routeToken.substring(3)] = [urlToken, ...urlTokens.slice(0, paramLength)];
 				urlTokens = urlTokens.slice(paramLength);
+			} else if (routeToken === '*') {
+				const paramLength = urlTokens.length - routeTokens.length;
+				urlTokens = urlTokens.slice(paramLength);
 			} else if (routeToken !== urlToken) {
 				return false;
 			}
