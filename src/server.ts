@@ -17,12 +17,12 @@ export class LunaticServer extends Router {
 		const request = new Request(req);
 		const response = new Response(res);
 
-		super.handle(request, response);
-
-		if (!res.writableEnded) {
-			res.statusCode = 404;
-			res.end();
-		}
+		super.handle(request, response, () => {
+			if (!res.writableEnded) {
+				res.statusCode = 404;
+				res.end();
+			}
+		});
 	}
 
 	public listen(port: number): Server {
