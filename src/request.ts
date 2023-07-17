@@ -18,7 +18,7 @@ export class Request {
 	}
 
 	set params(params: Record<string, string | string[]>) {
-		this.requestParameters = params;
+		this.requestParameters = { ...this.requestParameters, ...params };
 	}
 
 	get url() {
