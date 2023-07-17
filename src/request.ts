@@ -2,14 +2,15 @@ import { IncomingMessage } from 'http';
 import { URL } from 'url';
 
 export class Request {
-	private requestParameters: Record<string, string | string[]>;
 	public readonly originalUrl: string;
 	public readonly query: Record<string, string | string[] | undefined>;
 	public body: string | object | undefined;
 	public path: string;
 	public protocol: string;
+	private readonly req: IncomingMessage;
+	private requestParameters: Record<string, string | string[]>;
 
-	constructor(private readonly req: IncomingMessage) {
+	constructor(req: IncomingMessage) {
 		const protocol = 'encrypted' in req.socket ? 'https' : 'http';
 		const originalUrl = `${protocol}://${req.headers.host}${req.url}`;
 		const { pathname, searchParams } = new URL(originalUrl);
@@ -23,6 +24,7 @@ export class Request {
 		this.originalUrl = originalUrl;
 		this.path = pathname;
 		this.protocol = protocol;
+		this.req = req;
 		this.requestParameters = {};
 		this.query = query;
 	}
@@ -35,19 +37,19 @@ export class Request {
 		return this.req.headers;
 	}
 
-	on(event: 'data', listener: (chunk: Uint8Array) => void): this;
-	on(event: 'end', listener: () => void): this;
-	on(event: 'error', listener: (error: Error) => void): this;
-	on(event: string, listener: (...args: any[]) => void): this {
-		this.req.on(event, listener);
-		return this;
-	}
-
 	get params() {
 		return this.requestParameters;
 	}
 
 	set params(params: Record<string, string | string[]>) {
 		this.requestParameters = { ...this.requestParameters, ...params };
+	}
+
+	on(event: 'data', listener: (chunk: Uint8Array) => void): this;
+	on(event: 'end', listener: () => void): this;
+	on(event: 'error', listener: (error: Error) => void): this;
+	on(event: string, listener: (...args: any[]) => void): this {
+		this.req.on(event, listener);
+		return this;
 	}
 }

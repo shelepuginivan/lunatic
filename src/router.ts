@@ -13,85 +13,6 @@ export class Router {
 		this.middlewares = [];
 	}
 
-	private matchRequest(
-		req: Request,
-		method: HttpMethod,
-		route: string,
-		handler: RequestHandler | Router
-	) {
-		route = normalizeRoute(route);
-
-		if (method !== 'any' && req.method !== method) {
-			return false;
-		}
-
-		const params: Record<string, string | string[]> = {};
-
-		const routeTokens = route.split('/');
-		let urlTokens = req.path.split('/');
-
-		while (routeTokens.length && urlTokens.length) {
-			const routeToken = routeTokens.shift() as string;
-			const urlToken = urlTokens.shift() as string;
-
-			if (routeToken[0] === ':') {
-				params[routeToken.substring(1)] = urlToken;
-			} else if (routeToken.startsWith('...')) {
-				const paramLength = urlTokens.length - routeTokens.length;
-				params[routeToken.substring(3)] = [urlToken, ...urlTokens.slice(0, paramLength)];
-				urlTokens = urlTokens.slice(paramLength);
-			} else if (routeToken === '*') {
-				const paramLength = urlTokens.length - routeTokens.length;
-				urlTokens = urlTokens.slice(paramLength);
-			} else if (routeToken !== urlToken) {
-				return false;
-			}
-		}
-
-		if (handler instanceof Router) {
-			req.params = params;
-			return true;
-		}
-
-		if (routeTokens.length || urlTokens.length) {
-			return false;
-		}
-
-		req.params = params;
-		return true;
-	}
-
-	protected handle(req: Request, res: Response, next: NextHandler) {
-		let i = 0;
-
-		const nextHandler: NextHandler = () => {
-			if (i >= this.middlewares.length) {
-				return next();
-			}
-
-			const { method, route, handler } = this.middlewares[i];
-			i++;
-
-			if (!this.matchRequest(req, method, route, handler)) {
-				return nextHandler();
-			}
-
-			if (handler instanceof Router) {
-				/** Remove first part of request path to match it with nested middlewares
-				 *  e.g. /user/profile => /profile
-				 */
-				const urlInThisRouter = req.path;
-				req.path = normalizeRoute(req.path.replace(/\/[^/]*/, ''));
-				handler.handle(req, res, nextHandler);
-				req.path = urlInThisRouter;
-			} else {
-				handler(req, res, nextHandler);
-			}
-		};
-
-		nextHandler();
-	}
-
 	public use(route: string, handler: RequestHandler | Router) {
 		route = normalizeRoute(route);
 		this.middlewares.push({ method: 'any', route, handler });
@@ -160,5 +81,85 @@ export class Router {
 		this.middlewares.push({ method: 'PATCH', route, handler });
 
 		return this;
+	}
+
+
+	protected handle(req: Request, res: Response, next: NextHandler) {
+		let i = 0;
+
+		const nextHandler: NextHandler = () => {
+			if (i >= this.middlewares.length) {
+				return next();
+			}
+
+			const { method, route, handler } = this.middlewares[i];
+			i++;
+
+			if (!this.matchRequest(req, method, route, handler)) {
+				return nextHandler();
+			}
+
+			if (handler instanceof Router) {
+				/** Remove first part of request path to match it with nested middlewares
+				 *  e.g. /user/profile => /profile
+				 */
+				const urlInThisRouter = req.path;
+				req.path = normalizeRoute(req.path.replace(/\/[^/]*/, ''));
+				handler.handle(req, res, nextHandler);
+				req.path = urlInThisRouter;
+			} else {
+				handler(req, res, nextHandler);
+			}
+		};
+
+		nextHandler();
+	}
+
+	private matchRequest(
+		req: Request,
+		method: HttpMethod,
+		route: string,
+		handler: RequestHandler | Router
+	) {
+		route = normalizeRoute(route);
+
+		if (method !== 'any' && req.method !== method) {
+			return false;
+		}
+
+		const params: Record<string, string | string[]> = {};
+
+		const routeTokens = route.split('/');
+		let urlTokens = req.path.split('/');
+
+		while (routeTokens.length && urlTokens.length) {
+			const routeToken = routeTokens.shift() as string;
+			const urlToken = urlTokens.shift() as string;
+
+			if (routeToken[0] === ':') {
+				params[routeToken.substring(1)] = urlToken;
+			} else if (routeToken.startsWith('...')) {
+				const paramLength = urlTokens.length - routeTokens.length;
+				params[routeToken.substring(3)] = [urlToken, ...urlTokens.slice(0, paramLength)];
+				urlTokens = urlTokens.slice(paramLength);
+			} else if (routeToken === '*') {
+				const paramLength = urlTokens.length - routeTokens.length;
+				urlTokens = urlTokens.slice(paramLength);
+			} else if (routeToken !== urlToken) {
+				return false;
+			}
+		}
+
+		if (handler instanceof Router) {
+			req.params = params;
+			return true;
+		}
+
+		if (routeTokens.length || urlTokens.length) {
+			return false;
+		}
+
+		req.params = params;
+		return true;
 	}
 }
