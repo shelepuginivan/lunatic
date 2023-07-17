@@ -16,6 +16,6 @@ export const bodyParser: RequestHandler = (req: Request, _res: Response, next: N
 		}
 
 		req.body = body;
-		next()
+		next();
 	});
 };
