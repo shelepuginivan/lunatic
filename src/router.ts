@@ -65,7 +65,9 @@ export class Router {
 		let i = 0;
 
 		const nextHandler: NextHandler = () => {
-			if (i >= this.middlewares.length) { return; }
+			if (i >= this.middlewares.length) {
+				return next();
+			}
 
 			const { method, route, handler } = this.middlewares[i];
 			i++;
@@ -87,7 +89,6 @@ export class Router {
 		};
 
 		nextHandler();
-		next();
 	}
 
 	public use(route: string, handler: RequestHandler | Router) {
