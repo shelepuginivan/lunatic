@@ -13,7 +13,14 @@ export class Router {
 		this.middlewares = [];
 	}
 
-	private matchRequest = (req: Request, method: HttpMethod, route: string) => {
+	private matchRequest(
+		req: Request,
+		method: HttpMethod,
+		route: string,
+		handler: RequestHandler | Router
+	) {
+		route = normalizeRoute(route);
+
 		if (method !== 'any' && req.method !== method) {
 			return false;
 		}
@@ -36,6 +43,11 @@ export class Router {
 			} else if (routeToken !== urlToken) {
 				return false;
 			}
+		}
+
+		if (handler instanceof Router) {
+			req.params = params;
+			return true;
 		}
 
 		if (routeTokens.length || urlTokens.length) {
