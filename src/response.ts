@@ -12,14 +12,17 @@ export class Response {
 		this.res.end(JSON.stringify(body));
 	}
 
-	public setHeader(name: string, value: number | string | string[]) {
+	public setHeader(name: string, value: number | string | string[]): this {
 		this.res.setHeader(name, value);
+		return this;
 	}
 
-	public setHeaders(headers: Record<string, number | string | string[]>) {
+	public setHeaders(headers: Record<string, number | string | string[]>): this {
 		for (const name in headers) {
 			this.res.setHeader(name, headers[name]);
 		}
+
+		return this;
 	}
 
 	public status(status: number): Response {
