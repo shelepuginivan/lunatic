@@ -1,4 +1,9 @@
+import { existsSync } from 'fs';
+import { readFile, stat } from 'fs/promises';
 import * as http from 'http';
+import { extname } from 'path';
+
+import { Mime } from './utils/mime';
 
 export class Response {
 	constructor(private readonly res: http.ServerResponse) {}
@@ -10,6 +15,38 @@ export class Response {
 	public async json(body: object): Promise<void> {
 		this.res.setHeader('Content-Type', 'application/json');
 		this.res.end(JSON.stringify(body));
+	}
+
+	public async send(path: string): Promise<void>
+	public async send(buffer: Buffer, extension?: string): Promise<void>
+	public async send(arg1: string | Buffer, arg2?: string): Promise<void> {
+		if (typeof arg1 === 'string') {
+			const stats = await stat(arg1);
+
+			if (!existsSync(arg1) || stats.isDirectory()) {
+				return this.status(404).end();
+			}
+
+			const extension = extname(arg1);
+			const file = await readFile(arg1);
+			const contentType = Mime.get(extension);
+
+			this.setHeaders({
+				'Content-Length': stats.size,
+				'Content-Type': contentType
+			});
+
+			await this.res.end(file);
+		} else {
+			const contentType = Mime.get(arg2);
+
+			this.setHeaders({
+				'Content-Length': arg1.length,
+				'Content-Type': contentType
+			});
+
+			this.res.end(arg1);
+		}
 	}
 
 	public setHeader(name: string, value: number | string | string[]): this {
