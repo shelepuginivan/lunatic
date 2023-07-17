@@ -37,6 +37,11 @@
 			"error",
 			"always"
 		],
+		"no-trailing-spaces": [
+			"error",
+			{ "skipBlankLines": false }
+		],
+		"@typescript-eslint/member-ordering": "error",
         "simple-import-sort/imports": "error",
         "simple-import-sort/exports": "error"
     }
