@@ -2,7 +2,9 @@ import { Request } from './request';
 import { Response } from './response';
 import { HttpMethod } from './types/http-method';
 import { Middleware } from './types/middleware';
+import { NextHandler } from './types/next-handler';
 import { RequestHandler } from './types/request-handler';
+import { normalizeRoute } from './utils/normalize-route';
 
 export class Router {
 	private readonly middlewares: Middleware[];
@@ -42,23 +44,35 @@ export class Router {
 
 		req.params = params;
 		return true;
-	};
+	}
 
-	protected handle(req: Request, res: Response) {
-		for (let i = 0; i < this.middlewares.length; i++) {
+	protected handle(req: Request, res: Response, next: NextHandler) {
+		let i = 0;
+
+		const nextHandler: NextHandler = () => {
+			if (i >= this.middlewares.length) { return; }
+
 			const { method, route, handler } = this.middlewares[i];
+			i++;
 
-			if (!this.matchRequest(req, method, route)) {
-				continue;
+			if (!this.matchRequest(req, method, route, handler)) {
+				return nextHandler();
 			}
 
 			if (handler instanceof Router) {
-				req.url = req.url.replace(route, '/');
-				handler.handle(req, res);
+				/** Remove first part of request url to match it with nested middlewares
+				 *  e.g. /user/profile => /profile
+				 */
+				req.url = normalizeRoute(req.url.replace(/\/[^/]*/, ''));
+				handler.handle(req, res, nextHandler);
+				req.url = req.originalUrl;
 			} else {
-				handler(req, res);
+				handler(req, res, nextHandler);
 			}
-		}
+		};
+
+		nextHandler();
+		next();
 	}
 
 	public use(route: string, handler: RequestHandler | Router) {
