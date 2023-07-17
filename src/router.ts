@@ -28,7 +28,7 @@ export class Router {
 		const params: Record<string, string | string[]> = {};
 
 		const routeTokens = route.split('/');
-		let urlTokens = req.url.split('/');
+		let urlTokens = req.path.split('/');
 
 		while (routeTokens.length && urlTokens.length) {
 			const routeToken = routeTokens.shift() as string;
@@ -77,12 +77,13 @@ export class Router {
 			}
 
 			if (handler instanceof Router) {
-				/** Remove first part of request url to match it with nested middlewares
+				/** Remove first part of request path to match it with nested middlewares
 				 *  e.g. /user/profile => /profile
 				 */
-				req.url = normalizeRoute(req.url.replace(/\/[^/]*/, ''));
+				const urlInThisRouter = req.path;
+				req.path = normalizeRoute(req.path.replace(/\/[^/]*/, ''));
 				handler.handle(req, res, nextHandler);
-				req.url = req.originalUrl;
+				req.path = urlInThisRouter;
 			} else {
 				handler(req, res, nextHandler);
 			}
