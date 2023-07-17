@@ -3,11 +3,11 @@ import * as http from 'http';
 export class Response {
 	constructor(private readonly res: http.ServerResponse) {}
 
-	public end() {
+	public async end(): Promise<void> {
 		this.res.end();
 	}
 
-	public json(body: object) {
+	public async json(body: object): Promise<void> {
 		this.res.setHeader('Content-Type', 'application/json');
 		this.res.end(JSON.stringify(body));
 	}
@@ -27,7 +27,7 @@ export class Response {
 		return this;
 	}
 
-	public text(body: string) {
+	public async text(body: string): Promise<void> {
 		this.setHeader('Content-Type', 'text/plain');
 		this.res.end(body);
 	}
