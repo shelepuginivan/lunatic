@@ -1,14 +1,30 @@
-import * as http from 'http';
+import { IncomingMessage } from 'http';
+import { URL } from 'url';
 
 export class Request {
 	private requestParameters: Record<string, string | string[]>;
 	public readonly originalUrl: string;
+	public readonly query: Record<string, string | string[] | undefined>;
 	public body: string | object | undefined;
+	public path: string;
+	public protocol: string;
 
-	constructor(private readonly req: http.IncomingMessage) {
-		this.requestParameters = {};
-		this.originalUrl = req.url as string;
+	constructor(private readonly req: IncomingMessage) {
+		const protocol = 'encrypted' in req.socket ? 'https' : 'http';
+		const originalUrl = `${protocol}://${req.headers.host}${req.url}`;
+		const { pathname, searchParams } = new URL(originalUrl);
+		const query: Record<string, string | string[] | undefined> = {};
+
+		for (const [key, value] of searchParams.entries()) {
+			query[key] = value;
+		}
+
 		this.body = undefined;
+		this.originalUrl = originalUrl;
+		this.path = pathname;
+		this.protocol = protocol;
+		this.requestParameters = {};
+		this.query = query;
 	}
 
 	get method() {
@@ -33,13 +49,5 @@ export class Request {
 
 	set params(params: Record<string, string | string[]>) {
 		this.requestParameters = { ...this.requestParameters, ...params };
-	}
-
-	get url() {
-		return this.req.url as string;
-	}
-
-	set url(url: string) {
-		this.req.url = url;
 	}
 }
