@@ -13,8 +13,18 @@ export class Router {
 		this.middlewares = [];
 	}
 
-	public use(route: string, handler: RequestHandler | Router): this {
-		return this.addMiddleware('any', route, handler);
+	public use(handler: RequestHandler | Router): this
+	public use(route: string, handler: RequestHandler | Router): this
+	public use(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router) {
+		if (typeof arg1 === 'string' && arg2) {
+			return this.addMiddleware('any', arg1, arg2);
+		}
+
+		if (typeof arg1 !== 'string') {
+			return this.addMiddleware('any', '*', arg1);
+		}
+
+		return this;
 	}
 
 	public get(route: string, handler: RequestHandler | Router): this {
