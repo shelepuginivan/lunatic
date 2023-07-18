@@ -3,7 +3,10 @@ import { RequestHandler } from '../types/request-handler';
 export const bodyParser: RequestHandler = (req, _res, next) => {
 	const contentType = req.headers['content-type'];
 
-	if (contentType !== 'application/json' && contentType !== 'text/plain') {
+	if (
+		!contentType?.startsWith('application/json') &&
+		!contentType?.startsWith('text/plain')
+	) {
 		return next();
 	}
 
