@@ -15,7 +15,7 @@ export const bodyParser: RequestHandler = (req, _res, next) => {
 	req
 		.on('data', (chunk) => chunks.push(chunk))
 		.on('end', () => {
-			let body: string | object = Buffer.concat(chunks).toString();
+			let body: string | Record<string, any> = Buffer.concat(chunks).toString();
 
 			if (contentType === 'application/json') {
 				body = JSON.parse(body);
