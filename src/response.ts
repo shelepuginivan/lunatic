@@ -3,10 +3,14 @@ import { readFile, stat } from 'fs/promises';
 import * as http from 'http';
 import { extname } from 'path';
 
+import { RenderFunction } from './types/render-function';
 import { Mime } from './utils/mime';
 
 export class Response {
-	constructor(private readonly res: http.ServerResponse) {}
+	constructor(
+		private readonly res: http.ServerResponse,
+		private readonly renderFunction: RenderFunction
+	) {}
 
 	public async end(): Promise<void> {
 		this.res.end();
@@ -20,6 +24,19 @@ export class Response {
 	public async redirect(location: string): Promise<void> {
 		this.setHeader('Location', location);
 		this.res.end();
+	}
+
+	public async render(path: string, options?: Record<string, string>) {
+		const stats = existsSync(path) && await stat(path);
+
+		if (!stats || stats.isDirectory()) {
+			return this.status(404).end();
+		}
+
+		const source = await readFile(path);
+		const html = this.renderFunction(source.toString(), options);
+		this.setHeader('Content-Type', 'text/html');
+		this.res.end(html);
 	}
 
 	public async send(path: string): Promise<void>
