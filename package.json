@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"description": "Node.js backend framework",
 	"main": "./lib/index.js",
-	"types": "lib/index.d.ts",
+	"types": "./lib/index.d.ts",
 	"scripts": {
 		"lint": "eslint --fix src",
 		"build": "tsc"
