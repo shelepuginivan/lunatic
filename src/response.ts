@@ -21,9 +21,9 @@ export class Response {
 	public async send(buffer: Buffer, extension?: string): Promise<void>
 	public async send(arg1: string | Buffer, arg2?: string): Promise<void> {
 		if (typeof arg1 === 'string') {
-			const stats = await stat(arg1);
+			const stats = existsSync(arg1) && await stat(arg1);
 
-			if (!existsSync(arg1) || stats.isDirectory()) {
+			if (!stats || stats.isDirectory()) {
 				return this.status(404).end();
 			}
 
