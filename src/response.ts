@@ -17,6 +17,11 @@ export class Response {
 		this.res.end(JSON.stringify(body));
 	}
 
+	public async redirect(location: string): Promise<void> {
+		this.setHeader('Location', location);
+		this.res.end();
+	}
+
 	public async send(path: string): Promise<void>
 	public async send(buffer: Buffer, extension?: string): Promise<void>
 	public async send(arg1: string | Buffer, arg2?: string): Promise<void> {
