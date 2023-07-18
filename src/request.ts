@@ -1,10 +1,13 @@
 import { IncomingMessage } from 'http';
 import { URL } from 'url';
 
+import { UploadedFile } from './types/uploaded-file';
+
 export class Request {
 	public readonly originalUrl: string;
 	public readonly query: Record<string, string | string[] | undefined>;
-	public body: string | object | undefined;
+	public body: string | Record<string, any> | undefined;
+	public files: Record<string, UploadedFile[]> | undefined;
 	public path: string;
 	public protocol: string;
 	private readonly req: IncomingMessage;
@@ -21,6 +24,7 @@ export class Request {
 		}
 
 		this.body = undefined;
+		this.files = undefined;
 		this.originalUrl = originalUrl;
 		this.path = pathname;
 		this.protocol = protocol;
