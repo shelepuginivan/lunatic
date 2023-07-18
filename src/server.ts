@@ -22,7 +22,7 @@ export class LunaticServer extends Router {
 
 		super.handle(request, response, () => {
 			if (!res.writableEnded) {
-				res.statusCode = 404;
+				res.statusCode = 501;
 				res.end();
 			}
 		});
