@@ -1,8 +1,8 @@
-import { normalizeRoute } from './normalize-route';
+import { normalizePath } from './normalize-path';
 
 export const trimPathStart = (path: string, pathStart: string) => {
-	path = normalizeRoute(path);
-	pathStart = normalizeRoute(pathStart);
+	path = normalizePath(path);
+	pathStart = normalizePath(pathStart);
 
 	if (pathStart === '/') {
 		return path;
@@ -11,5 +11,5 @@ export const trimPathStart = (path: string, pathStart: string) => {
 	const pathStartLength = pathStart.split('/').length;
 	const pathTokens = path.split('/');
 
-	return normalizeRoute(pathTokens.slice(pathStartLength).join('/'));
+	return normalizePath(pathTokens.slice(pathStartLength).join('/'));
 };

@@ -4,7 +4,7 @@ import { HttpMethod } from './types/http-method';
 import { Middleware } from './types/middleware';
 import { NextHandler } from './types/next-handler';
 import { RequestHandler } from './types/request-handler';
-import { normalizeRoute } from './utils/normalize-route';
+import { normalizePath } from './utils/normalize-path';
 import { trimPathStart } from './utils/trim-path-start';
 
 export class Router {
@@ -102,7 +102,7 @@ export class Router {
 	}
 
 	private addMiddleware(method: HttpMethod, route: string, handler: RequestHandler | Router): this {
-		route = normalizeRoute(route);
+		route = normalizePath(route);
 		this.middlewares.push({ method, route, handler });
 		return this;
 	}
@@ -112,7 +112,7 @@ export class Router {
 		route: string,
 		handler: RequestHandler | Router
 	): [boolean, Record<string, string | string[]>] {
-		route = normalizeRoute(route);
+		route = normalizePath(route);
 		const params: Record<string, string | string[]> = {};
 
 		const routeTokens = route.split('/');
