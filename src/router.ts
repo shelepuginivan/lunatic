@@ -76,7 +76,9 @@ export class Router {
 			const { method, route, handler } = this.middlewares[i];
 			i++;
 
-			if (!this.matchRequest(req, method, route, handler)) {
+			const [match, params] = this.matchRequest(req, method, route, handler);
+
+			if (!match) {
 				return nextHandler();
 			}
 
@@ -86,6 +88,7 @@ export class Router {
 				handler.handle(req, res, nextHandler);
 				req.path = urlInThisRouter;
 			} else {
+				req.params = { ...req.params, ...params };
 				handler(req, res, nextHandler);
 			}
 		};
@@ -104,14 +107,13 @@ export class Router {
 		method: HttpMethod,
 		route: string,
 		handler: RequestHandler | Router
-	): boolean {
+	): [boolean, Record<string, string | string[]>] {
 		route = normalizeRoute(route);
+		const params: Record<string, string | string[]> = {};
 
 		if (method !== 'any' && req.method !== method) {
-			return false;
+			return [false, params];
 		}
-
-		const params: Record<string, string | string[]> = {};
 
 		const routeTokens = route.split('/');
 		let urlTokens = req.path.split('/');
@@ -134,20 +136,15 @@ export class Router {
 				const paramLength = urlTokens.length - routeTokens.length;
 				urlTokens = urlTokens.slice(paramLength);
 			} else if (routeToken !== urlToken) {
-				return false;
+				return [false, params];
 			}
 		}
 
-		if (handler instanceof Router) {
-			req.params = params;
-			return true;
-		}
-
-		if (routeTokens.length || urlTokens.length) {
-			return false;
-		}
-
-		req.params = params;
-		return true;
+		return [
+			handler instanceof Router ||
+			!routeTokens.length &&
+			!urlTokens.length,
+			params
+		];
 	}
 }
