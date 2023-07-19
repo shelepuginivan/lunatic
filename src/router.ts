@@ -83,10 +83,11 @@ export class Router {
 			}
 
 			if (handler instanceof Router) {
-				const urlInThisRouter = req.path;
-				req.path = trimPathStart(req.path, route);
-				handler.handle(req, res, nextHandler);
-				req.path = urlInThisRouter;
+				const modifiedRequest = Object.assign(Object.create(Object.getPrototypeOf(req)), req);
+				modifiedRequest.path = trimPathStart(req.path, route);
+				modifiedRequest.params = { ...req.params, ...params };
+
+				handler.handle(modifiedRequest, res, nextHandler);
 			} else {
 				req.params = { ...req.params, ...params };
 				handler(req, res, nextHandler);
