@@ -8,10 +8,10 @@ export class Request {
 	public readonly query: Record<string, string | string[] | undefined>;
 	public body: string | Record<string, any> | undefined;
 	public files: Record<string, UploadedFile[]> | undefined;
+	public params: Record<string, string | string[]>;
 	public path: string;
 	public protocol: string;
 	private readonly req: IncomingMessage;
-	private requestParameters: Record<string, string | string[]>;
 
 	constructor(req: IncomingMessage) {
 		const protocol = 'encrypted' in req.socket ? 'https' : 'http';
@@ -26,10 +26,10 @@ export class Request {
 		this.body = undefined;
 		this.files = undefined;
 		this.originalUrl = originalUrl;
+		this.params = {};
 		this.path = pathname;
 		this.protocol = protocol;
 		this.req = req;
-		this.requestParameters = {};
 		this.query = query;
 	}
 
@@ -39,14 +39,6 @@ export class Request {
 
 	get headers() {
 		return this.req.headers;
-	}
-
-	get params() {
-		return this.requestParameters;
-	}
-
-	set params(params: Record<string, string | string[]>) {
-		this.requestParameters = { ...this.requestParameters, ...params };
 	}
 
 	on(event: 'data', listener: (chunk: Uint8Array) => void): this;
