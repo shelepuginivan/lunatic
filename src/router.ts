@@ -5,6 +5,7 @@ import { Middleware } from './types/middleware';
 import { NextHandler } from './types/next-handler';
 import { RequestHandler } from './types/request-handler';
 import { normalizeRoute } from './utils/normalize-route';
+import { trimPathStart } from './utils/trimPathStart';
 
 export class Router {
 	private readonly middlewares: Middleware[];
@@ -80,11 +81,8 @@ export class Router {
 			}
 
 			if (handler instanceof Router) {
-				/** Remove first part of request path to match it with nested middlewares
-				 *  e.g. /user/profile => /profile
-				 */
 				const urlInThisRouter = req.path;
-				req.path = normalizeRoute(req.path.replace(/\/[^/]*/, ''));
+				req.path = trimPathStart(req.path, route);
 				handler.handle(req, res, nextHandler);
 				req.path = urlInThisRouter;
 			} else {
