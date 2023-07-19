@@ -76,7 +76,11 @@ export class Router {
 			const { method, route, handler } = this.middlewares[i];
 			i++;
 
-			const [match, params] = this.matchRequest(req, method, route, handler);
+			if (method !== 'any' && req.method !== method) {
+				return nextHandler();
+			}
+
+			const [match, params] = this.matchRequest(req.path, route, handler);
 
 			if (!match) {
 				return nextHandler();
@@ -104,20 +108,15 @@ export class Router {
 	}
 
 	private matchRequest(
-		req: Request,
-		method: HttpMethod,
+		path: string,
 		route: string,
 		handler: RequestHandler | Router
 	): [boolean, Record<string, string | string[]>] {
 		route = normalizeRoute(route);
 		const params: Record<string, string | string[]> = {};
 
-		if (method !== 'any' && req.method !== method) {
-			return [false, params];
-		}
-
 		const routeTokens = route.split('/');
-		let urlTokens = req.path.split('/');
+		let urlTokens = path.split('/');
 
 		while (routeTokens.length && urlTokens.length) {
 			const routeToken = routeTokens.shift() as string;
