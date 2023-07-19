@@ -5,7 +5,7 @@ import { Middleware } from './types/middleware';
 import { NextHandler } from './types/next-handler';
 import { RequestHandler } from './types/request-handler';
 import { normalizeRoute } from './utils/normalize-route';
-import { trimPathStart } from './utils/trimPathStart';
+import { trimPathStart } from './utils/trim-path-start';
 
 export class Router {
 	private readonly middlewares: Middleware[];
