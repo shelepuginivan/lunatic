@@ -122,6 +122,10 @@ export class Router {
 			const routeToken = routeTokens.shift() as string;
 			const urlToken = urlTokens.shift() as string;
 
+			if (routeToken === '' || urlToken === '') {
+				continue;
+			}
+
 			if (routeToken[0] === ':') {
 				params[routeToken.substring(1)] = urlToken;
 			} else if (routeToken.startsWith('...')) {
