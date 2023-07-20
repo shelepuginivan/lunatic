@@ -7,6 +7,7 @@ export class Request {
 	public readonly originalUrl: string;
 	public readonly query: Record<string, string | string[] | undefined>;
 	public body: string | Record<string, any> | undefined;
+	public cookies: Record<string, string> | undefined;
 	public files: Record<string, UploadedFile[]> | undefined;
 	public params: Record<string, string | string[]>;
 	public path: string;
@@ -24,6 +25,7 @@ export class Request {
 		}
 
 		this.body = undefined;
+		this.cookies = undefined;
 		this.files = undefined;
 		this.originalUrl = originalUrl;
 		this.params = {};
