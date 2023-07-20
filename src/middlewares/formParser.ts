@@ -46,7 +46,7 @@ export const formParser: RequestHandler = (req, _res, next) => {
 			}
 
 			const uploadedFile = {
-				data: Buffer.from(content),
+				data: Buffer.from(content.slice(0, -2)),	// trim trailing CRLF
 				filename,
 				mimetype
 			};
