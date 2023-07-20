@@ -17,9 +17,15 @@ export class Response {
 		this.setCookies = [];
 	}
 
-	public clearCookie(name: string): this {
-		this.setCookies.push(`${name}=`);
+	public clearCookie(name: string, options?: CookieOptions): this {
+		const setCookieHeaderValue = this.parseCookieOptions(name, '', {
+			...options,
+			expires: 0
+		});
+
+		this.setCookies.push(setCookieHeaderValue);
 		this.setHeader('Set-Cookie', this.setCookies);
+
 		return this;
 	}
 
