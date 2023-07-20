@@ -3,6 +3,7 @@ import { readFile, stat } from 'fs/promises';
 import * as http from 'http';
 import { extname } from 'path';
 
+import { CookieOptions } from './types/cookie-options';
 import { RenderFunction } from './types/render-function';
 import { Mime } from './utils/mime';
 
@@ -69,6 +70,50 @@ export class Response {
 
 			this.res.end(arg1);
 		}
+	}
+
+	public setCookie(name: string, value: number | string, options?: CookieOptions): this {
+		const tokens: string[] = [`${name}=${value}`];
+
+		if (options?.expires) {
+			if (typeof options.expires === 'number') {
+				tokens.push(`Expires=${new Date(options.expires).toUTCString()}`);
+			} else {
+				const timestamp = Date.parse(options.expires);
+
+				if (!isNaN(timestamp)) {
+					tokens.push(`Expires=${new Date(timestamp).toUTCString()}`);
+				}
+			}
+		}
+
+		if (options?.maxAge) {
+			tokens.push(`Max-Age=${options.maxAge}`);
+		}
+
+		if (options?.httpOnly) {
+			tokens.push('HttpOnly');
+		}
+
+		if (options?.secure) {
+			tokens.push('Secure');
+		}
+
+		if (options?.path) {
+			tokens.push(`Path=${options.path}`);
+		}
+
+		if (options?.domain) {
+			tokens.push(`Domain=${options.domain}`);
+		}
+
+		if (options?.sameSite) {
+			tokens.push(`SameSite=${options.sameSite}`);
+		}
+
+		this.setHeader('Set-Cookie', tokens.join('; '));
+
+		return this;
 	}
 
 	public setHeader(name: string, value: number | string | string[]): this {
