@@ -83,46 +83,9 @@ export class Response {
 	}
 
 	public setCookie(name: string, value: number | string, options?: CookieOptions): this {
-		const tokens: string[] = [`${name}=${value}`];
+		const setCookieHeaderValue = this.parseCookieOptions(name, value, options);
 
-		if (options?.expires) {
-			if (typeof options.expires === 'number') {
-				tokens.push(`Expires=${new Date(options.expires).toUTCString()}`);
-			} else {
-				const timestamp = Date.parse(options.expires);
-
-				if (!isNaN(timestamp)) {
-					tokens.push(`Expires=${new Date(timestamp).toUTCString()}`);
-				}
-			}
-		}
-
-		if (options?.maxAge) {
-			tokens.push(`Max-Age=${options.maxAge}`);
-		}
-
-		if (options?.httpOnly) {
-			tokens.push('HttpOnly');
-		}
-
-		if (options?.secure) {
-			tokens.push('Secure');
-		}
-
-		if (options?.path) {
-			tokens.push(`Path=${options.path}`);
-		}
-
-		if (options?.domain) {
-			tokens.push(`Domain=${options.domain}`);
-		}
-
-		if (options?.sameSite) {
-			tokens.push(`SameSite=${options.sameSite}`);
-		}
-
-		this.setCookies.push(tokens.join('; '));
-
+		this.setCookies.push(setCookieHeaderValue);
 		this.setHeader('Set-Cookie', this.setCookies);
 
 		return this;
@@ -149,5 +112,45 @@ export class Response {
 	public async text(body: string): Promise<void> {
 		this.setHeader('Content-Type', 'text/plain');
 		this.res.end(body);
+	}
+
+	private parseCookieOptions(name: string, value: number | string, options?: CookieOptions): string {
+		const tokens: string[] = [`${name}=${value}`];
+
+		tokens.push(`Path=${options?.path ?? '/'}`);
+
+		if (options?.expires !== undefined) {
+			if (typeof options.expires === 'number') {
+				tokens.push(`Expires=${new Date(options.expires).toUTCString()}`);
+			} else {
+				const timestamp = Date.parse(options.expires);
+
+				if (!isNaN(timestamp)) {
+					tokens.push(`Expires=${new Date(timestamp).toUTCString()}`);
+				}
+			}
+		}
+
+		if (options?.maxAge !== undefined) {
+			tokens.push(`Max-Age=${options.maxAge}`);
+		}
+
+		if (options?.httpOnly) {
+			tokens.push('HttpOnly');
+		}
+
+		if (options?.secure) {
+			tokens.push('Secure');
+		}
+
+		if (options?.domain) {
+			tokens.push(`Domain=${options.domain}`);
+		}
+
+		if (options?.sameSite) {
+			tokens.push(`SameSite=${options.sameSite}`);
+		}
+
+		return tokens.join('; ');
 	}
 }
