@@ -121,7 +121,10 @@ export class Router {
 			return [true, params];
 		}
 
-		if (path === '/' && route !== '/') {
+		if (
+			path === '/' && route !== '/' ||
+			path !== '/' && route === '/' && !(handler instanceof Router)
+		) {
 			return [false, params];
 		}
 
