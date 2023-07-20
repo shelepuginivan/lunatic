@@ -3,6 +3,7 @@ import { Server } from 'http';
 import request from 'supertest';
 
 import { LunaticServer, Router, bodyParser } from '../src';
+import { mockReqBody } from './mocks/req.body.mock';
 
 
 describe('middlewares/bodyParser()', () => {
@@ -21,7 +22,7 @@ describe('middlewares/bodyParser()', () => {
 			res.status(200).json(req.body as Record<string, unknown>);
 		});
 
-		const body = { a: 1, b: 2 }
+		const body = mockReqBody[2];
 
 		request(server)
 			.post('/')
@@ -49,22 +50,7 @@ describe('middlewares/bodyParser()', () => {
 		app.use('/', router);
 		app.use('/another', anotherRouter);
 
-		const body = {
-			"name": "John Doe",
-			"email": "johndoe@example.com",
-			"age": 30,
-			"address": {
-				"street": "123 Main St",
-				"city": "Anytown",
-				"state": "CA",
-				"zip": "12345"
-			},
-			"interests": [
-				"hiking",
-				"reading",
-				"traveling"
-			]
-		};
+		const body = mockReqBody[0];
 
 		request(server)
 			.post('/body')
