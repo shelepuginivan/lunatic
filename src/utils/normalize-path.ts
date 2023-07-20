@@ -1,6 +1,10 @@
 export const normalizePath = (path: string) => {
 	path = path.trim();
 
+	if (path === '*') {
+		return path;
+	}
+
 	if (path.at(-1) === '/') {
 		path = path.slice(0, -1);
 	}
