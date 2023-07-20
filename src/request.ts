@@ -4,6 +4,8 @@ import { URL } from 'url';
 import { UploadedFile } from './types/uploaded-file';
 
 export class Request {
+	[name: string]: unknown;
+
 	public readonly originalUrl: string;
 	public readonly query: Record<string, string | string[] | undefined>;
 	public body: string | Record<string, any> | undefined;
