@@ -6,7 +6,7 @@ import { LunaticServer, Router, formParser } from '../src';
 import { mockReqFiles } from './mocks/req.files.mock';
 
 
-describe('middlewares/bodyParser()', () => {
+describe('middlewares/formParser()', () => {
 	let app: LunaticServer;
 	let server: Server;
 
