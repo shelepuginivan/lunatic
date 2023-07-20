@@ -112,8 +112,18 @@ export class Router {
 		route: string,
 		handler: RequestHandler | Router
 	): [boolean, Record<string, string | string[]>] {
+		path = normalizePath(path);
 		route = normalizePath(route);
+
 		const params: Record<string, string | string[]> = {};
+
+		if (route === '*') {
+			return [true, params];
+		}
+
+		if (path === '/' && route !== '/') {
+			return [false, params];
+		}
 
 		const routeTokens = route.split('/');
 		let urlTokens = path.split('/');
@@ -140,8 +150,11 @@ export class Router {
 			}
 		}
 
+		if (handler instanceof Router) {
+			return [routeTokens.length === 0, params];
+		}
+
 		return [
-			handler instanceof Router ||
 			!routeTokens.length &&
 			!urlTokens.length,
 			params
