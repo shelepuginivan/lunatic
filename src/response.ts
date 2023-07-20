@@ -8,10 +8,14 @@ import { RenderFunction } from './types/render-function';
 import { Mime } from './utils/mime';
 
 export class Response {
+	private readonly setCookies: string[];
+
 	constructor(
 		private readonly res: http.ServerResponse,
 		private readonly renderFunction: RenderFunction
-	) {}
+	) {
+		this.setCookies = [];
+	}
 
 	public async end(): Promise<void> {
 		this.res.end();
@@ -111,7 +115,9 @@ export class Response {
 			tokens.push(`SameSite=${options.sameSite}`);
 		}
 
-		this.setHeader('Set-Cookie', tokens.join('; '));
+		this.setCookies.push(tokens.join('; '));
+
+		this.setHeader('Set-Cookie', this.setCookies);
 
 		return this;
 	}
