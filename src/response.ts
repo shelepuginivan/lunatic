@@ -17,6 +17,12 @@ export class Response {
 		this.setCookies = [];
 	}
 
+	public clearCookie(name: string): this {
+		this.setCookies.push(`${name}=`);
+		this.setHeader('Set-Cookie', this.setCookies);
+		return this;
+	}
+
 	public async end(): Promise<void> {
 		this.res.end();
 	}
