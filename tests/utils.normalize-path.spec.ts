@@ -30,4 +30,8 @@ describe('utils/normalizeRoute()', () => {
 	it('Should return / if path is empty', () => {
 		expect(normalizePath('')).toEqual('/');
 	});
+
+	it('Should not modify "*"', () => {
+		expect(normalizePath('*')).toBe('*');
+	})
 });
