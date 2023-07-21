@@ -17,53 +17,62 @@ export class Router {
 	public use(handler: RequestHandler | Router): this
 	public use(route: string, handler: RequestHandler | Router): this
 	public use(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router) {
-		if (typeof arg1 === 'string' && arg2) {
-			return this.addMiddleware('any', arg1, arg2);
-		}
-
-		if (typeof arg1 !== 'string') {
-			return this.addMiddleware('any', '*', arg1);
-		}
-
-		return this;
+		return this.addMiddleware('any', arg1, arg2);
 	}
 
-	public get(route: string, handler: RequestHandler | Router): this {
-		return this.addMiddleware('GET', route, handler);
+	public get(handler: RequestHandler | Router): this
+	public get(route: string, handler: RequestHandler | Router): this
+	public get(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
+		return this.addMiddleware('GET', arg1, arg2);
 	}
 
-	public head(route: string, handler: RequestHandler | Router): this {
-		return this.addMiddleware('HEAD', route, handler);
+	public head(handler: RequestHandler | Router): this
+	public head(route: string, handler: RequestHandler | Router): this
+	public head(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
+		return this.addMiddleware('HEAD', arg1, arg2);
 	}
 
-	public post(route: string, handler: RequestHandler | Router): this {
-		return this.addMiddleware('POST', route, handler);
+	public post(handler: RequestHandler | Router): this
+	public post(route: string, handler: RequestHandler | Router): this
+	public post(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
+		return this.addMiddleware('POST', arg1, arg2);
 	}
 
-	public put(route: string, handler: RequestHandler | Router): this {
-		return this.addMiddleware('PUT', route, handler);
+	public put(handler: RequestHandler | Router): this
+	public put(route: string, handler: RequestHandler | Router): this
+	public put(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
+		return this.addMiddleware('PUT', arg1, arg2);
 	}
 
-	public delete(route: string, handler: RequestHandler | Router): this {
-		return this.addMiddleware('DELETE', route, handler);
+	public delete(handler: RequestHandler | Router): this
+	public delete(route: string, handler: RequestHandler | Router): this
+	public delete(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
+		return this.addMiddleware('DELETE', arg1, arg2);
 	}
 
-	public connect(route: string, handler: RequestHandler | Router): this {
-		return this.addMiddleware('CONNECT', route, handler);
+	public connect(handler: RequestHandler | Router): this
+	public connect(route: string, handler: RequestHandler | Router): this
+	public connect(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
+		return this.addMiddleware('CONNECT', arg1, arg2);
 	}
 
-	public options(route: string, handler: RequestHandler | Router): this {
-		return this.addMiddleware('OPTIONS', route, handler);
+	public options(handler: RequestHandler | Router): this
+	public options(route: string, handler: RequestHandler | Router): this
+	public options(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
+		return this.addMiddleware('OPTIONS', arg1, arg2);
 	}
 
-	public trace(route: string, handler: RequestHandler | Router): this {
-		return this.addMiddleware('TRACE', route, handler);
+	public trace(handler: RequestHandler | Router): this
+	public trace(route: string, handler: RequestHandler | Router): this
+	public trace(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
+		return this.addMiddleware('TRACE', arg1, arg2);
 	}
 
-	public patch(route: string, handler: RequestHandler | Router): this {
-		return this.addMiddleware('PATCH', route, handler);
+	public patch(handler: RequestHandler | Router): this
+	public patch(route: string, handler: RequestHandler | Router): this
+	public patch(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
+		return this.addMiddleware('PATCH', arg1, arg2);
 	}
-
 
 	protected handle(req: Request, res: Response, next: NextHandler): void {
 		let i = 0;
@@ -101,9 +110,26 @@ export class Router {
 		nextHandler();
 	}
 
-	private addMiddleware(method: HttpMethod, route: string, handler: RequestHandler | Router): this {
-		route = normalizePath(route);
-		this.middlewares.push({ method, route, handler });
+	private addMiddleware(
+		method: HttpMethod,
+		arg2: string | RequestHandler | Router,
+		arg3?: RequestHandler | Router
+	): this {
+		if (typeof arg2 === 'string' && arg3) {
+			arg2 = normalizePath(arg2);
+			this.middlewares.push({
+				method,
+				handler: arg3,
+				route: arg2
+			});
+		} else if (typeof arg2 !== 'string') {
+			this.middlewares.push({
+				method,
+				handler: arg2,
+				route: '*'
+			})
+		}
+
 		return this;
 	}
 
