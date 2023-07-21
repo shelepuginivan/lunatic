@@ -59,5 +59,15 @@ describe('middlewares/cookieParser()', () => {
 			.set('Cookie', 'id=31943480329482309')
 			.expect(204)
 			.end(done);
-	})
+	});
+
+	it('Should skip parsing stage if request does not have "Cookie" header', async () => {
+		app.use(cookieParser);
+		app.get('/', (req, res) => {
+			expect(req.cookies).toBeUndefined();
+			res.status(200).json(req.cookies as Record<string, string>);
+		});
+
+		await request(server).get('/');
+	});
 });
