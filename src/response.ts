@@ -34,8 +34,7 @@ export class Response {
 	}
 
 	public async json(body: object): Promise<void> {
-		this.res.setHeader('Content-Type', 'application/json');
-		this.res.end(JSON.stringify(body));
+		await this.send(JSON.stringify(body), 'application/json');
 	}
 
 	public async redirect(location: string): Promise<void> {
@@ -52,8 +51,8 @@ export class Response {
 
 		const source = await readFile(path);
 		const html = this.renderFunction(source.toString(), options);
-		this.setHeader('Content-Type', 'text/html');
-		this.res.end(html);
+
+		await this.send(html, 'text/html');
 	}
 
 	public async send(content: string | Buffer, mimetype?: string) {
@@ -79,15 +78,10 @@ export class Response {
 		}
 
 		const extension = extname(path);
-		const file = await readFile(path);
+		const fileContent = await readFile(path);
 		const contentType = Mime.get(extension);
 
-		this.setHeaders({
-			'Content-Length': stats.size,
-			'Content-Type': contentType
-		});
-
-		await this.res.end(file);
+		await this.send(fileContent, contentType);
 	}
 
 	public setCookie(name: string, value: number | string, options?: CookieOptions): this {
@@ -118,8 +112,7 @@ export class Response {
 	}
 
 	public async text(body: string): Promise<void> {
-		this.setHeader('Content-Type', 'text/plain');
-		this.res.end(body);
+		await this.send(body, 'text/plain');
 	}
 
 	private parseCookieOptions(name: string, value: number | string, options?: CookieOptions): string {
