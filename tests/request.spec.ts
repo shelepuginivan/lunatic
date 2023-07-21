@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from '@jest/globals';
 import { Server } from 'http';
 import request from 'supertest';
 
-import { LunaticServer, Request } from '../src';
+import { LunaticServer } from '../src';
 import { mockReqBody } from './mocks/req.body.mock';
 
 describe('Request', () => {
@@ -14,32 +14,24 @@ describe('Request', () => {
 		server = new Server(app.callback);
 	});
 
-	it('Should have all required properties', (done) => {
-		let handledRequest: Request;
+	it('Should have all required properties', async () => {
 
 		app.get('/', (req, res) => {
-			handledRequest = req;
+			expect(req).toHaveProperty('body');
+			expect(req).toHaveProperty('cookies');
+			expect(req).toHaveProperty('files');
+			expect(req).toHaveProperty('headers');
+			expect(req).toHaveProperty('method');
+			expect(req).toHaveProperty('originalUrl');
+			expect(req).toHaveProperty('params');
+			expect(req).toHaveProperty('path');
+			expect(req).toHaveProperty('protocol');
+			expect(req).toHaveProperty('query');
+
 			res.status(204).end();
 		})
 
-		request(server).get('/').end((error) => {
-			if (error) {
-				done(error);
-			}
-
-			expect(handledRequest).toHaveProperty('body');
-			expect(handledRequest).toHaveProperty('cookies');
-			expect(handledRequest).toHaveProperty('files');
-			expect(handledRequest).toHaveProperty('headers');
-			expect(handledRequest).toHaveProperty('method');
-			expect(handledRequest).toHaveProperty('originalUrl');
-			expect(handledRequest).toHaveProperty('params');
-			expect(handledRequest).toHaveProperty('path');
-			expect(handledRequest).toHaveProperty('protocol');
-			expect(handledRequest).toHaveProperty('query');
-
-			done();
-		});
+		await request(server).get('/');
 	});
 
 	it('Should support .on() listeners', (done) => {
