@@ -56,36 +56,38 @@ export class Response {
 		this.res.end(html);
 	}
 
-	public async send(path: string): Promise<void>
-	public async send(buffer: Buffer, extension?: string): Promise<void>
-	public async send(arg1: string | Buffer, arg2?: string): Promise<void> {
-		if (typeof arg1 === 'string') {
-			const stats = existsSync(arg1) && await stat(arg1);
+	public async send(content: string | Buffer, mimetype?: string) {
+		mimetype = mimetype || Mime.get(null);
 
-			if (!stats || stats.isDirectory()) {
-				return this.status(404).end();
-			}
-
-			const extension = extname(arg1);
-			const file = await readFile(arg1);
-			const contentType = Mime.get(extension);
-
-			this.setHeaders({
-				'Content-Length': stats.size,
-				'Content-Type': contentType
-			});
-
-			await this.res.end(file);
-		} else {
-			const contentType = Mime.get(arg2);
-
-			this.setHeaders({
-				'Content-Length': arg1.length,
-				'Content-Type': contentType
-			});
-
-			this.res.end(arg1);
+		if (typeof content === 'string') {
+			content = Buffer.from(content, 'utf16le');
 		}
+
+		this.setHeaders({
+			'Content-Length': content.length,
+			'Content-Type': mimetype
+		});
+
+		this.res.end(content);
+	}
+
+	public async sendFile(path: string): Promise<void> {
+		const stats = existsSync(path) && await stat(path);
+
+		if (!stats || stats.isDirectory()) {
+			return this.status(404).end();
+		}
+
+		const extension = extname(path);
+		const file = await readFile(path);
+		const contentType = Mime.get(extension);
+
+		this.setHeaders({
+			'Content-Length': stats.size,
+			'Content-Type': contentType
+		});
+
+		await this.res.end(file);
 	}
 
 	public setCookie(name: string, value: number | string, options?: CookieOptions): this {
