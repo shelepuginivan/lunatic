@@ -80,5 +80,29 @@ describe('LunaticServer.renderer()', () => {
 			.get('/')
 			.expect('Content-Type', 'text/html')
 			.expect(expectedHtml);
-	})
+	});
+
+	it('Should respond with 404 if file does not exist', async () => {
+		const path = join(__dirname, 'mocks', 'files', '__does_not_exist__.html')
+
+		app.get('/', (_req, res) => {
+			res.status(200).renderFile(path);
+		});
+
+		await request(server)
+			.get('/')
+			.expect(404);
+	});
+
+	it('Should respond with 404 if provided path is a directory', async () => {
+		const path = join(__dirname, 'mocks', 'files')
+
+		app.get('/', (_req, res) => {
+			res.status(200).renderFile(path);
+		});
+
+		await request(server)
+			.get('/')
+			.expect(404);
+	});
 });
