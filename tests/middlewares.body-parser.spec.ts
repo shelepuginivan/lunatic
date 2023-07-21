@@ -87,4 +87,17 @@ describe('middlewares/bodyParser()', () => {
 			.expect(body)
 			.end(done);
 	});
+
+	it('Should ignore formats other than "text/plain" and "application/json"', async () => {
+		app.use(bodyParser);
+		app.post('/', (req, res) => {
+			expect(req.body).toBeUndefined();
+			res.end();
+		});
+
+		await request(server)
+			.post('/')
+			.set('Content-Type', 'multipart/form-data')
+			.field('test', 'value');
+	});
 });
