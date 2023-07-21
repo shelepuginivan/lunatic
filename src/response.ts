@@ -141,14 +141,12 @@ export class Response {
 		tokens.push(`Path=${options?.path ?? '/'}`);
 
 		if (options?.expires !== undefined) {
-			if (typeof options.expires === 'number') {
-				tokens.push(`Expires=${new Date(options.expires).toUTCString()}`);
-			} else {
-				const timestamp = Date.parse(options.expires);
+			const timestamp = typeof options.expires === 'string'
+				? Date.parse(options.expires)
+				: options.expires;
 
-				if (!isNaN(timestamp)) {
-					tokens.push(`Expires=${new Date(timestamp).toUTCString()}`);
-				}
+			if (!isNaN(timestamp)) {
+				tokens.push(`Expires=${new Date(timestamp).toUTCString()}`);
 			}
 		}
 
