@@ -34,6 +34,54 @@ describe('Request', () => {
 		await request(server).get('/');
 	});
 
+	it('Should have expected properties', async () => {
+		app.get('/', (req, res) => {
+			expect(req.method).toBe('GET');
+			expect(req.path).toBe('/');
+			expect(req.protocol).toBe('http');
+			expect(req.params).toEqual({});
+			expect(req.query).toEqual({});
+
+			res.status(204).end();
+		})
+
+		app.post('/some/endpoint', (req, res) => {
+			expect(req.method).toBe('POST');
+			expect(req.path).toBe('/some/endpoint');
+			expect(req.protocol).toBe('http');
+			expect(req.originalUrl).toBe('http://localhost:8000/some/endpoint');
+			expect(req.params).toEqual({});
+			expect(req.query).toEqual({});
+
+			res.status(204).end();
+		})
+
+		await request(server).get('/');
+
+		await request(server)
+			.post('/some/endpoint')
+			.set('Host', 'localhost:8000');
+
+	});
+
+	it('Should have query if request url contains search', async () => {
+		app.get('/', (req, res) => {
+			expect(req.query).toEqual({ page: '1', limit: '10' })
+			res.status(204).end();
+		})
+
+		await request(server).get('/?page=1&limit=10');
+	});
+
+	it('Should have params if route is dynamic', async () => {
+		app.get('/:id', (req, res) => {
+			expect(req.params).toEqual({ id: '38902384' })
+			res.status(204).end();
+		})
+
+		await request(server).get('/38902384');
+	})
+
 	it('Should support .on() listeners', (done) => {
 		app.post('/', (req, res) => {
 			req
