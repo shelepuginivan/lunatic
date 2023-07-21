@@ -57,7 +57,11 @@ export class Response {
 		await this.send(html, 'text/html');
 	}
 
-	public async send(content: string | Buffer, mimetype?: string) {
+	public async send(content?: string | Buffer, mimetype?: string) {
+		if (content === undefined) {
+			return this.status(204).end();
+		}
+
 		mimetype = mimetype || Mime.get(null);
 
 		const contentLength = typeof content === 'string'
