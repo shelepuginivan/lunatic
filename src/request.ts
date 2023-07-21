@@ -1,6 +1,7 @@
 import { IncomingMessage } from 'http';
 import { URL } from 'url';
 
+import { HttpMethod } from './types/http-method';
 import { UploadedFile } from './types/uploaded-file';
 
 export class Request {
@@ -11,6 +12,7 @@ export class Request {
 	public body: string | Record<string, any> | undefined;
 	public cookies: Record<string, string> | undefined;
 	public files: Record<string, UploadedFile[]> | undefined;
+	public method: HttpMethod;
 	public params: Record<string, string | string[]>;
 	public path: string;
 	public protocol: string;
@@ -29,16 +31,13 @@ export class Request {
 		this.body = undefined;
 		this.cookies = undefined;
 		this.files = undefined;
+		this.method = req.method as HttpMethod | undefined ?? 'any';
 		this.originalUrl = originalUrl;
 		this.params = {};
 		this.path = pathname;
 		this.protocol = protocol;
 		this.req = req;
 		this.query = query;
-	}
-
-	get method() {
-		return this.req.method;
 	}
 
 	get headers() {
