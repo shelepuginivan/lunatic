@@ -44,7 +44,12 @@ export class Response {
 		this.res.end();
 	}
 
-	public async render(path: string, options?: Record<string, string>) {
+	public async render(source: string, options?: Record<string, unknown>) {
+		const html = this.renderFunction(source, options);
+		await this.send(html, 'text/html');
+	}
+
+	public async renderFile(path: string, options?: Record<string, unknown>) {
 		const stats = existsSync(path) && await stat(path);
 
 		if (!stats || stats.isDirectory()) {
