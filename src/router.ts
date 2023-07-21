@@ -68,15 +68,6 @@ export class Router {
 	protected handle(req: Request, res: Response, next: NextHandler): void {
 		let i = 0;
 
-		/**
-		 * Treat HEAD requests as GET requests
-		 * but omit body of the response
-		 */
-		if (req.method === 'HEAD') {
-			req.method = 'GET';
-			res.withoutBody();
-		}
-
 		const nextHandler: NextHandler = () => {
 			if (i >= this.middlewares.length) {
 				return next();
