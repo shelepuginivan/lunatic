@@ -9,12 +9,14 @@ import { Mime } from './utils/mime';
 
 export class Response {
 	private readonly setCookies: string[];
+	private omitResponseBody: boolean;
 
 	constructor(
 		private readonly res: http.ServerResponse,
 		private readonly renderFunction: RenderFunction
 	) {
 		this.setCookies = [];
+		this.omitResponseBody = false;
 	}
 
 	public clearCookie(name: string, options?: CookieOptions): this {
@@ -58,16 +60,20 @@ export class Response {
 	public async send(content: string | Buffer, mimetype?: string) {
 		mimetype = mimetype || Mime.get(null);
 
-		if (typeof content === 'string') {
-			content = Buffer.from(content, 'utf16le');
-		}
+		const contentLength = typeof content === 'string'
+			? new TextEncoder().encode(content).byteLength
+			: content.byteLength;
 
 		this.setHeaders({
-			'Content-Length': content.length,
+			'Content-Length': contentLength,
 			'Content-Type': mimetype
 		});
 
-		this.res.end(content);
+		if (this.omitResponseBody) {
+			await this.status(204).end();
+		}
+
+		return this.res.end(content);
 	}
 
 	public async sendFile(path: string): Promise<void> {
@@ -113,6 +119,11 @@ export class Response {
 
 	public async text(body: string): Promise<void> {
 		await this.send(body, 'text/plain');
+	}
+
+	public withoutBody(): this {
+		this.omitResponseBody = true;
+		return this;
 	}
 
 	private parseCookieOptions(name: string, value: number | string, options?: CookieOptions): string {
