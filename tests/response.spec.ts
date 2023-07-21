@@ -131,9 +131,43 @@ describe('Response', () => {
 			.get('/')
 			.expect(
 				'Set-Cookie',
-				`default=light; Path=/,httponly=some; Path=/; HttpOnly,expires=930434; Path=/; Expires=${new Date(expires).toUTCString()}`
+				`default=light; Path=/; SameSite=Lax,httponly=some; Path=/; HttpOnly; SameSite=Lax,expires=930434; Path=/; Expires=${new Date(expires).toUTCString()}; SameSite=Lax`
 			)
 			.end(done);
+	});
+
+	it('Should not set Expires attribute if provided value in invalid', async () => {
+		app.get('/', (_req, res) => {
+			res
+				.setCookie('some', 'value', { expires: NaN })
+				.setCookie('another', 930434, { expires: 'invalid time string' })
+				.end();
+
+		});
+
+		await request(server)
+			.get('/')
+			.expect(
+				'Set-Cookie',
+				`some=value; Path=/; SameSite=Lax,another=930434; Path=/; SameSite=Lax`
+			);
+	});
+
+	it('Should be able to set different cookie attributes', async () => {
+		app.get('/', (_req, res) => {
+			res
+				.setCookie('some', 'value', { secure: true, sameSite: 'None' })
+				.setCookie('another', 930434, { maxAge: 60 * 1000, domain: 'example.com' })
+				.end();
+
+		});
+
+		await request(server)
+			.get('/')
+			.expect(
+				'Set-Cookie',
+				`some=value; Path=/; Secure; SameSite=None,another=930434; Path=/; Max-Age=60000; Domain=example.com; SameSite=Lax`
+			);
 	});
 
 	it('Should be able to clear cookies', async () => {
@@ -155,7 +189,7 @@ describe('Response', () => {
 			.expect(204)
 			.expect(
 				'Set-Cookie',
-				`id=; Path=/; Expires=${expired},value=; Path=/; Expires=${expired},some=; Path=/; Expires=${expired}`
+				`id=; Path=/; Expires=${expired}; SameSite=Lax,value=; Path=/; Expires=${expired}; SameSite=Lax,some=; Path=/; Expires=${expired}; SameSite=Lax`
 			);
 	});
 
