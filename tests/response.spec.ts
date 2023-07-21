@@ -158,6 +158,7 @@ describe('Response', () => {
 			res
 				.setCookie('some', 'value', { secure: true, sameSite: 'None' })
 				.setCookie('another', 930434, { maxAge: 60 * 1000, domain: 'example.com' })
+				.setCookie('with', 'path', { path: '/api' })
 				.end();
 
 		});
@@ -166,7 +167,9 @@ describe('Response', () => {
 			.get('/')
 			.expect(
 				'Set-Cookie',
-				`some=value; Path=/; Secure; SameSite=None,another=930434; Path=/; Max-Age=60000; Domain=example.com; SameSite=Lax`
+				'some=value; Path=/; Secure; SameSite=None,' +
+				'another=930434; Path=/; Max-Age=60000; Domain=example.com; SameSite=Lax,' +
+				'with=path; Path=/api; SameSite=Lax'
 			);
 	});
 
