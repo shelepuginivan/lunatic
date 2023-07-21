@@ -1,8 +1,8 @@
-import { beforeEach, describe, it } from '@jest/globals';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 import { Server } from 'http';
 import request from 'supertest'
 
-import { LunaticServer } from '../src'
+import { LunaticServer, RequestHandler } from '../src';
 import { Router } from '../src';
 
 describe('Router', () => {
@@ -12,6 +12,23 @@ describe('Router', () => {
 	beforeEach(() => {
 		app = new LunaticServer();
 		server = new Server(app.callback);
+	});
+
+	it('Should support method chaining', () => {
+		const router = new Router();
+
+		const emptyMiddleware: RequestHandler = (_req, _res, next) => next();
+
+		expect(router.use(emptyMiddleware)).toBe(router);
+		expect(router.get('*', emptyMiddleware)).toBe(router);
+		expect(router.head('*', emptyMiddleware)).toBe(router);
+		expect(router.post('*', emptyMiddleware)).toBe(router);
+		expect(router.put('*', emptyMiddleware)).toBe(router);
+		expect(router.delete('*', emptyMiddleware)).toBe(router);
+		expect(router.options('*', emptyMiddleware)).toBe(router);
+		expect(router.connect('*', emptyMiddleware)).toBe(router);
+		expect(router.trace('*', emptyMiddleware)).toBe(router);
+		expect(router.patch('*', emptyMiddleware)).toBe(router);
 	});
 
 	it('Should support dynamic routes (:)', (done) => {
