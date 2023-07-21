@@ -50,6 +50,48 @@ describe('middlewares/formParser()', () => {
 			.end(done)
 	});
 
+	it('Should be able to parse multiple files from same field', (done) => {
+		app.use(formParser);
+		app.post('/', (req, res) => {
+			expect(req.files).toEqual(files);
+			res.status(200).json(req.body as Record<string, string | string[]>);
+		})
+
+		const attachment1 = mockReqFiles[0];
+		const attachment2 = mockReqFiles[1];
+
+		const files = {
+			file: [
+				{
+					filename: '1.txt',
+					data: attachment1,
+					mimetype: 'text/plain'
+				},
+				{
+					filename: '2.txt',
+					data: attachment2,
+					mimetype: 'text/plain'
+				}
+			]
+		}
+
+		const body: Record<string, string> = {
+			a: '1',
+			b: '2'
+		};
+
+
+		request(server)
+			.post('/')
+			.field('a', '1')
+			.field('b', '2')
+			.attach('file', attachment1, '1.txt')
+			.attach('file', attachment2, '2.txt')
+			.expect(200)
+			.expect(body)
+			.end(done)
+	});
+
 	it('Should work in Router', (done) => {
 		const router = new Router();
 
@@ -105,4 +147,17 @@ describe('middlewares/formParser()', () => {
 			.end(done);
 
 	});
+
+	it('Should ignore formats other than "multipart/form-data"', async () => {
+		app.use(formParser);
+		app.post('/', (req, res) => {
+			expect(req.files).toBeUndefined();
+			expect(req.body).toBeUndefined();
+			res.status(200).json(req.body as Record<string, string | string[]>);
+		})
+
+		await request(server)
+			.post('/')
+			.send({ some: 'data' });
+	})
 });
