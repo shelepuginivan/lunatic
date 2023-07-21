@@ -168,6 +168,8 @@ export class Response {
 
 		if (options?.sameSite) {
 			tokens.push(`SameSite=${options.sameSite}`);
+		} else {
+			tokens.push('SameSite=Lax')
 		}
 
 		return tokens.join('; ');
