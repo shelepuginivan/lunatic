@@ -106,7 +106,7 @@ describe('LunaticServer features', () => {
 			res.status(204).end();
 		})
 
-		request(server)
+		await request(server)
 			.get('/')
 			.expect('X-Powered-By', 'Lunatic');
 	});
