@@ -65,7 +65,7 @@ describe('middlewares/cookieParser()', () => {
 		app.use(cookieParser);
 		app.get('/', (req, res) => {
 			expect(req.cookies).toBeUndefined();
-			res.status(200).json(req.cookies as Record<string, string>);
+			res.status(204).end();
 		});
 
 		await request(server).get('/');
