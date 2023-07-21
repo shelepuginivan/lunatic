@@ -100,4 +100,14 @@ describe('middlewares/bodyParser()', () => {
 			.set('Content-Type', 'multipart/form-data')
 			.field('test', 'value');
 	});
+
+	it('Should skip body parse stage if body was not provided', async () => {
+		app.use(bodyParser);
+		app.post('/', (req, res) => {
+			expect(req.body).toBeUndefined();
+			res.end();
+		});
+
+		await request(server).post('/');
+	});
 });
