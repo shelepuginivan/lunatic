@@ -6,6 +6,7 @@
 	"types": "./lib/index.d.ts",
 	"scripts": {
 		"build": "tsc",
+		"coverage": "jest --coverage",
 		"lint": "eslint --fix src",
 		"test": "jest"
 	},
