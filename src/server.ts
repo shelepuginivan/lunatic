@@ -3,8 +3,8 @@ import { createServer, IncomingMessage, Server, ServerResponse } from 'http';
 import { Request } from './request';
 import { Response } from './response';
 import { Router } from './router';
-import { RenderFunction } from './types/render-function';
 import { ApplicationFeature } from './types/application-feature';
+import { RenderFunction } from './types/render-function';
 
 export class LunaticServer extends Router {
 	public renderFunction: RenderFunction;
