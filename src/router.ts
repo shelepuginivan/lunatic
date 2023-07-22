@@ -127,7 +127,7 @@ export class Router {
 				method,
 				handler: arg2,
 				route: '*'
-			})
+			});
 		}
 
 		return this;
