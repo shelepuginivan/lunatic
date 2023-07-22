@@ -17,7 +17,7 @@ export class Router {
 	public use(handler: RequestHandler | Router): this
 	public use(route: string, handler: RequestHandler | Router): this
 	public use(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router) {
-		return this.addMiddleware('any', arg1, arg2);
+		return this.addMiddleware('*', arg1, arg2);
 	}
 
 	public get(handler: RequestHandler | Router): this
@@ -85,7 +85,7 @@ export class Router {
 			const { method, route, handler } = this.middlewares[i];
 			i++;
 
-			if (method !== 'any' && req.method !== method) {
+			if (method !== '*' && req.method !== method) {
 				return nextHandler();
 			}
 

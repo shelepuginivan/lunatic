@@ -31,7 +31,7 @@ export class Request {
 		this.body = undefined;
 		this.cookies = undefined;
 		this.files = undefined;
-		this.method = req.method as HttpMethod | undefined ?? 'any';
+		this.method = req.method as HttpMethod | undefined ?? '*';
 		this.originalUrl = originalUrl;
 		this.params = {};
 		this.path = pathname;
