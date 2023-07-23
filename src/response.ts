@@ -31,8 +31,10 @@ export class Response {
 		return this;
 	}
 
-	public async end(): Promise<void> {
-		this.res.end();
+	public end(): Promise<void> {
+		return new Promise(
+			(resolve: () => void) => this.res.end(resolve)
+		);
 	}
 
 	public async json(body: object): Promise<void> {
