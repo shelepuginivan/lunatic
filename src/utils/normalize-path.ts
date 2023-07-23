@@ -5,7 +5,7 @@ export const normalizePath = (path: string) => {
 		return path;
 	}
 
-	if (path.at(-1) === '/') {
+	if (path[path.length - 1] === '/') {
 		path = path.slice(0, -1);
 	}
 
