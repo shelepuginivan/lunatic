@@ -35,14 +35,14 @@ export const serveStatic = (staticDir: string, options?: ServeStaticOptions): Ro
 					: 403;
 
 				await res.status(status).end();
-				return next()
+				return next();
 			}
 
 			const stats = existsSync(fullPath) && await stat(fullPath);
 
 			if (!stats) {
 				await res.status(404).end();
-				return next()
+				return next();
 			}
 
 			if (stats.isDirectory()) {
@@ -54,7 +54,7 @@ export const serveStatic = (staticDir: string, options?: ServeStaticOptions): Ro
 					}
 				} else {
 					await res.status(404).end();
-					return next()
+					return next();
 				}
 			}
 
