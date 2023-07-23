@@ -31,7 +31,7 @@ describe('Router', () => {
 		expect(router.patch(emptyMiddleware)).toBe(router);
 	});
 
-	it('Should support dynamic routes (:)', (done) => {
+	it('Should support dynamic routes (:)', async () => {
 		const router = new Router();
 
 		router.get('/article/:article', (req, res) => {
@@ -44,68 +44,76 @@ describe('Router', () => {
 			res.status(200).json(req.params);
 		});
 
-		request(server)
+		app.get('/some/:param/route', (req, res) => {
+			res.status(200).json(req.params);
+		})
+
+		await request(server)
 			.get('/928347203847')
 			.expect(200)
-			.expect({ id: '928347203847' })
-			.end((error) => {
-				if (error) {
-					done(error)
-				}
-			});
+			.expect({ id: '928347203847' });
 
-		request(server)
+		await request(server)
 			.get('/username/article/3809842093')
 			.expect(200)
-			.expect({ article: '3809842093', user: 'username' })
-			.end(done);
+			.expect({ article: '3809842093', user: 'username' });
+
+		await request(server)
+			.get('/some/value/route')
+			.expect(200)
+			.expect({ param: 'value' });
 	});
 
-	it('Should support dynamic routes (...)', (done) => {
+	it('Should support dynamic routes (...)', async () => {
 		app.get('/data/...tokens', (req, res) => {
 			res.status(200).json(req.params);
 		});
 
-		request(server)
+		app.get('/another/...tokens/data', (req, res) => {
+			res.status(200).json(req.params);
+		});
+
+		await request(server)
 			.get('/data/a/b/c/d/e/f')
 			.expect(200)
-			.expect({ tokens: ['a', 'b', 'c', 'd', 'e', 'f'] })
-			.end(done);
+			.expect({ tokens: ['a', 'b', 'c', 'd', 'e', 'f'] });
+
+		await request(server)
+			.get('/another/1/2/3/data')
+			.expect(200)
+			.expect({ tokens: ['1', '2', '3'] })
 	});
 
-	it('Should support dynamic routes (*)', (done) => {
+	it('Should support dynamic routes (*)', async () => {
 		app.get('/any/*', (req, res) => {
 			res.status(200).json(req.params);
 		});
 
-		request(server)
+		app.get('/another/*/end', (_req, res) => {
+			res.status(204).end();
+		});
+
+		await request(server)
 			.get('/any/a/b/c/d/e/f')
 			.expect(200)
-			.expect({})
-			.end((error) => {
-				if (error) {
-					done(error);
-				}
-			});
+			.expect({});
 
-		request(server)
+		await request(server)
+			.get('/another/a/b/c/d/e/f/end')
+			.expect(204);
+
+		await request(server)
 			.get('/any/1/')
 			.expect(200)
-			.expect({})
-			.end((error) => {
-				if (error) {
-					done(error);
-				}
-			});
+			.expect({});
 
-		request(server)
+		await request(server)
 			.get('/any')
-			.expect(501)
-			.end(done);
+			.expect(501);
 	});
 
 	it('Should ignore search', (done) => {
-		const router = new Router()
+		const router = new Router();
 
 		router.get('/posts', (_req, res) => {
 			res.status(200).end();
