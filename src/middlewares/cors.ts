@@ -125,12 +125,11 @@ export const cors = (options?: CorsOptions) => {
 	} = options ?? {};
 
 	return new Router()
-		.options(async (req, res, next) => {
+		.options(async (req, res) => {
 			const requestOrigin = req.headers.origin;
 
 			if (!requestOrigin || origin === false || !matchOrigin(requestOrigin, origin)) {
-				await res.status(corsErrorStatus).end();
-				return next()
+				return await res.status(corsErrorStatus).end();
 			}
 
 			await res
@@ -143,8 +142,6 @@ export const cors = (options?: CorsOptions) => {
 					...accessControlMaxAge(maxAge)
 				})
 				.end();
-
-			next()
 		})
 		.use(async (req, res, next) => {
 			const requestOrigin = req.headers.origin;
