@@ -12,7 +12,7 @@ export class Response {
 	private omitResponseBody: boolean;
 
 	constructor(
-		private readonly res: ServerResponse,
+		public readonly serverResponse: ServerResponse,
 		private readonly renderFunction: RenderFunction
 	) {
 		this.setCookies = [];
@@ -33,13 +33,13 @@ export class Response {
 
 	public earlyHints(hints: Record<string, string | string[]>): Promise<void> {
 		return new Promise(
-			(resolve: () => void) => this.res.writeEarlyHints(hints, resolve)
+			(resolve: () => void) => this.serverResponse.writeEarlyHints(hints, resolve)
 		);
 	}
 
 	public end(): Promise<void> {
 		return new Promise(
-			(resolve: () => void) => this.res.end(resolve)
+			(resolve: () => void) => this.serverResponse.end(resolve)
 		);
 	}
 
@@ -90,7 +90,7 @@ export class Response {
 			return this.status(204).end();
 		}
 
-		this.res.end(content);
+		this.serverResponse.end(content);
 	}
 
 	public async sendFile(path: string): Promise<void> {
@@ -117,20 +117,20 @@ export class Response {
 	}
 
 	public setHeader(name: string, value: number | string | string[]): this {
-		this.res.setHeader(name, value);
+		this.serverResponse.setHeader(name, value);
 		return this;
 	}
 
 	public setHeaders(headers: Record<string, number | string | string[]>): this {
 		for (const name in headers) {
-			this.res.setHeader(name, headers[name]);
+			this.serverResponse.setHeader(name, headers[name]);
 		}
 
 		return this;
 	}
 
 	public status(status: number): Response {
-		this.res.statusCode = status;
+		this.serverResponse.statusCode = status;
 		return this;
 	}
 
