@@ -1,6 +1,16 @@
 import { Router } from '../router';
-import { CorsOptions } from '../types/cors-options';
 import { HttpMethod } from '../types/http-method';
+
+export interface CorsOptions {
+	allowedHeaders?: string | string[]
+	corsErrorStatus?: number
+	credentials?: boolean
+	exposedHeaders?: string | string[]
+	maxAge?: number
+	methods?: HttpMethod | HttpMethod[]
+	origin?: | boolean | string | string[] | RegExp | RegExp[] | ((origin: string) => boolean)
+	preflightSuccessStatus?: number
+}
 
 export const cors = (options?: CorsOptions) => {
 	const accessControlAllowCredentials = (

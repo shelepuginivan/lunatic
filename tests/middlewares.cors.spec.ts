@@ -3,8 +3,7 @@ import { Server } from 'http';
 import request from 'supertest';
 
 import { LunaticServer } from '../src';
-import { cors } from '../src/middlewares/cors';
-import { CorsOptions } from '../src/types/cors-options';
+import { cors, CorsOptions } from '../src/middlewares/cors';
 
 describe('middlewares/cors()', () => {
 	let app: LunaticServer;
