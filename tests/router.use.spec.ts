@@ -13,98 +13,55 @@ describe('Router.use()', () => {
 		server = new Server(app.callback);
 	});
 
-	it('Should register request handler', (done) => {
+	it('Should register request handler', async () => {
 		app.use('/', (_req, res) => {
 			res.status(204).end();
 		})
 
-		request(server)
+		await request(server)
 			.get('/')
-			.expect(204)
-			.end(done);
+			.expect(204);
 	});
 
-	it('Should handle any method', (done) => {
+	it('Should handle any method', async () => {
 		app.use('/', (_req, res) => {
 			res.status(204).end();
 		})
 
-		request(server)
+		await request(server)
 			.get('/')
-			.expect(204)
-			.end((error) => {
-				if (error) {
-					done(error)
-				}
-			});
+			.expect(204);
 
-		request(server)
+		await request(server)
 			.head('/')
-			.expect(204)
-			.end((error) => {
-				if (error) {
-					done(error)
-				}
-			});
+			.expect(204);
 
-		request(server)
+		await request(server)
 			.post('/')
-			.expect(204)
-			.end((error) => {
-				if (error) {
-					done(error)
-				}
-			});
+			.expect(204);
 
-		request(server)
+		await request(server)
 			.put('/')
-			.expect(204)
-			.end((error) => {
-				if (error) {
-					done(error)
-				}
-			});
+			.expect(204);
 
-		request(server)
+		await request(server)
 			.delete('/')
-			.expect(204)
-			.end((error) => {
-				if (error) {
-					done(error)
-				}
-			});
+			.expect(204);
 
-		request(server)
+		await request(server)
 			.options('/')
-			.expect(204)
-			.end((error) => {
-				if (error) {
-					done(error)
-				}
-			});
+			.expect(204);
 
-		request(server)
+		await request(server)
 			.trace('/')
-			.expect(204)
-			.end((error) => {
-				if (error) {
-					done(error)
-				}
-			});
+			.expect(204);
 
-		request(server)
+		await request(server)
 			.patch('/')
-			.expect(204)
-			.end((error) => {
-				if (error) {
-					done(error)
-				}
-			});
-
-		done();
+			.expect(204);
 	});
 
-	it('Should register Router', (done) => {
+	it('Should register Router', async () => {
 		const router = new Router();
 
 		router.get('/', (_req, res) => {
@@ -118,21 +75,16 @@ describe('Router.use()', () => {
 		app.use('/router', router);
 		app.use('/another/endpoint', router)
 
-		request(server)
+		await request(server)
 			.get('/router')
-			.expect(204)
-			.end((error) => {
-				if (error) {
-					done(error);
-				}
-			})
+			.expect(204);
 
-		request(server)
+		await request(server)
 			.get('/another/endpoint/route')
-			.expect(204, done);
+			.expect(204);
 	});
 
-	it('Should be able to register nested Routers', (done) => {
+	it('Should be able to register nested Routers', async () => {
 		const router = new Router()
 		const innerRouter = new Router()
 		const innerInnerRouter = new Router()
@@ -145,12 +97,12 @@ describe('Router.use()', () => {
 		router.use('/inner', innerRouter);
 		app.use('/inner', router)
 
-		request(server)
+		await request(server)
 			.get('/inner/inner/inner/inner')
-			.expect(201, done);
+			.expect(201);
 	})
 
-	it('Should be able to register many nested Routers', (done) => {
+	it('Should be able to register many nested Routers', async () => {
 		let router = new Router()
 		let newRouter = new Router()
 		let i: number;
@@ -167,14 +119,13 @@ describe('Router.use()', () => {
 			res.status(200).json({ i })
 		})
 
-		request(server)
+		await request(server)
 			.get('/')
 			.expect(200)
-			.expect({ i: 1000 })
-			.end(done);
+			.expect({ i: 1000 });
 	});
 
-	it('Should be able to register many middlewares', (done) => {
+	it('Should be able to register many middlewares', async () => {
 		let callNumber = 0;
 
 		for (let i = 0; i < 1000; i++) {
@@ -188,14 +139,13 @@ describe('Router.use()', () => {
 			res.status(200).json({ callNumber })
 		})
 
-		request(server)
+		await request(server)
 			.get('/')
 			.expect(200)
-			.expect({ callNumber: 1000 })
-			.end(done);
+			.expect({ callNumber: 1000 });
 	});
 
-	it('Should call middlewares in correct order', (done) => {
+	it('Should call middlewares in correct order', async () => {
 		const callOrder: string[] = [];
 		const expectedCallOrder = ['a', 'b', 'c', 'd', 'e']
 
@@ -204,21 +154,19 @@ describe('Router.use()', () => {
 			next();
 		}
 
-		app.use(middleware('a'))
-		app.use(middleware('b'))
-		app.use(middleware('c'))
-		app.use(middleware('d'))
-		app.use(middleware('e'))
+		app.use(middleware('a'));
+		app.use(middleware('b'));
+		app.use(middleware('c'));
+		app.use(middleware('d'));
+		app.use(middleware('e'));
 		app.get('/', (_req, res) => {
 			res.status(204).end();
 		})
 
-		request(server)
+		await request(server)
 			.get('/')
-			.expect(204)
-			.end((error) => {
-				expect(callOrder).toEqual(expectedCallOrder);
-				done(error);
-			})
-	})
+			.expect(204);
+
+		expect(callOrder).toEqual(expectedCallOrder);
+	});
 });
