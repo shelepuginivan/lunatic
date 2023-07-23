@@ -37,18 +37,18 @@ export class Response {
 		);
 	}
 
-	public async json(body: object): Promise<void> {
-		await this.send(JSON.stringify(body), 'application/json');
+	public json(body: object): Promise<void> {
+		return this.send(JSON.stringify(body), 'application/json');
 	}
 
-	public async redirect(location: string): Promise<void> {
+	public redirect(location: string): Promise<void> {
 		this.setHeader('Location', location);
-		this.res.end();
+		return this.end();
 	}
 
-	public async render(source: string, options?: Record<string, unknown>) {
+	public render(source: string, options?: Record<string, unknown>): Promise<void> {
 		const html = this.renderFunction(source, options);
-		await this.send(html, 'text/html');
+		return this.send(html, 'text/html');
 	}
 
 	public async renderFile(path: string, options?: Record<string, unknown>) {
@@ -61,7 +61,7 @@ export class Response {
 		const source = await readFile(path);
 		const html = this.renderFunction(source.toString(), options);
 
-		await this.send(html, 'text/html');
+		return this.send(html, 'text/html');
 	}
 
 	public async send(content?: string | Buffer, mimetype?: string) {
@@ -81,7 +81,7 @@ export class Response {
 		});
 
 		if (this.omitResponseBody) {
-			await this.status(204).end();
+			return this.status(204).end();
 		}
 
 		return this.res.end(content);
@@ -129,7 +129,7 @@ export class Response {
 	}
 
 	public async text(body: string): Promise<void> {
-		await this.send(body, 'text/plain');
+		return this.send(body, 'text/plain');
 	}
 
 	public withoutBody(): this {
