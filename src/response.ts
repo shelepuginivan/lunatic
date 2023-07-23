@@ -31,6 +31,12 @@ export class Response {
 		return this;
 	}
 
+	public earlyHints(hints: Record<string, string | string[]>): Promise<void> {
+		return new Promise(
+			(resolve: () => void) => this.res.writeEarlyHints(hints, resolve)
+		);
+	}
+
 	public end(): Promise<void> {
 		return new Promise(
 			(resolve: () => void) => this.res.end(resolve)
