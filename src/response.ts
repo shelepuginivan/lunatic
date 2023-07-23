@@ -1,6 +1,6 @@
 import { existsSync } from 'fs';
 import { readFile, stat } from 'fs/promises';
-import * as http from 'http';
+import { ServerResponse } from 'http';
 import { extname } from 'path';
 
 import { CookieOptions } from './types/cookie-options';
@@ -12,7 +12,7 @@ export class Response {
 	private omitResponseBody: boolean;
 
 	constructor(
-		private readonly res: http.ServerResponse,
+		private readonly res: ServerResponse,
 		private readonly renderFunction: RenderFunction
 	) {
 		this.setCookies = [];
