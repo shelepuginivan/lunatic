@@ -3,7 +3,6 @@ import { Server } from 'http';
 import request from 'supertest';
 
 import { LunaticServer } from '../src';
-import { mockReqBody } from './mocks/req.body.mock';
 
 describe('Request', () => {
 	let app: LunaticServer;
@@ -78,23 +77,5 @@ describe('Request', () => {
 		})
 
 		await request(server).get('/38902384');
-	})
-
-	it('Should support .on() listeners', async () => {
-		app.post('/', (req, res) => {
-			req
-				.on('data', (chunk) => expect(chunk).toBeInstanceOf(Uint8Array))
-				.on('end', () => {
-					res.status(204).end();
-				})
-				.on('error', () => {
-					res.status(500).end()
-				})
-		})
-
-		await request(server)
-			.post('/')
-			.send(mockReqBody[0])
-			.expect(204);
 	});
 });

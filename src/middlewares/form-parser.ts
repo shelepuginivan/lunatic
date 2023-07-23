@@ -14,7 +14,7 @@ export const formParser: RequestHandler = (req, _res, next) => {
 
 	const chunks: Uint8Array[] = [];
 
-	req
+	req.incomingMessage
 		.on('data', (chunk) => chunks.push(chunk))
 		.on('end', () => parseFormData());
 
