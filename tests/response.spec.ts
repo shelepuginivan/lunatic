@@ -265,4 +265,33 @@ describe('Response', () => {
 			.get('/')
 			.expect(404);
 	});
+
+	it('Should be able to remove headers (.removeHeader())', async () => {
+		app.get('/', (_req, res) => {
+			res
+				.status(200)
+				.removeHeader('Date')
+				.removeHeader('X-Powered-By')
+				.end();
+		});
+
+		const res = await request(server).get('/');
+
+		expect(res.headers).not.toHaveProperty('date');
+		expect(res.headers).not.toHaveProperty('x-powered-by');
+	});
+
+	it('Should be able to remove headers (.removeHeaders())', async () => {
+		app.get('/', (_req, res) => {
+			res
+				.status(200)
+				.removeHeaders(['Date', 'X-Powered-By'])
+				.end();
+		});
+
+		const res = await request(server).get('/');
+
+		expect(res.headers).not.toHaveProperty('date');
+		expect(res.headers).not.toHaveProperty('x-powered-by');
+	});
 });
