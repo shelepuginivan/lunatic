@@ -84,7 +84,7 @@ export class Response {
 			return this.status(204).end();
 		}
 
-		return this.res.end(content);
+		this.res.end(content);
 	}
 
 	public async sendFile(path: string): Promise<void> {
