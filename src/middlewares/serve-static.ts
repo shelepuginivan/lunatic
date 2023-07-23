@@ -23,7 +23,7 @@ export const serveStatic = (staticDir: string, options?: ServeStaticOptions): Ro
 	const { dotfiles, etag, index, lastModified } = options;
 
 	return new Router()
-		.get('*', async (req, res) => {
+		.get('*', async (req, res, next) => {
 			let fullPath = join(staticDir, req.path);
 
 			if (
@@ -34,13 +34,15 @@ export const serveStatic = (staticDir: string, options?: ServeStaticOptions): Ro
 					? 404
 					: 403;
 
-				return await res.status(status).end();
+				await res.status(status).end();
+				return next()
 			}
 
 			const stats = existsSync(fullPath) && await stat(fullPath);
 
 			if (!stats) {
-				return await res.status(404).end();
+				await res.status(404).end();
+				return next()
 			}
 
 			if (stats.isDirectory()) {
@@ -51,7 +53,8 @@ export const serveStatic = (staticDir: string, options?: ServeStaticOptions): Ro
 						fullPath = pathToIndex;
 					}
 				} else {
-					return await res.status(404).end();
+					await res.status(404).end();
+					return next()
 				}
 			}
 
@@ -90,6 +93,7 @@ export const serveStatic = (staticDir: string, options?: ServeStaticOptions): Ro
 			}
 
 			await res.status(200).sendFile(fullPath);
+			next();
 		})
 		.use('*', async (_req, res) => {
 			await res.status(405).end();
