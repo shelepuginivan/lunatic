@@ -15,7 +15,6 @@ describe('Request', () => {
 	});
 
 	it('Should have all required properties', async () => {
-
 		app.get('/', (req, res) => {
 			expect(req).toHaveProperty('body');
 			expect(req).toHaveProperty('cookies');
@@ -61,7 +60,6 @@ describe('Request', () => {
 		await request(server)
 			.post('/some/endpoint')
 			.set('Host', 'localhost:8000');
-
 	});
 
 	it('Should have query if request url contains search', async () => {
@@ -82,20 +80,21 @@ describe('Request', () => {
 		await request(server).get('/38902384');
 	})
 
-	it('Should support .on() listeners', (done) => {
+	it('Should support .on() listeners', async () => {
 		app.post('/', (req, res) => {
 			req
 				.on('data', (chunk) => expect(chunk).toBeInstanceOf(Uint8Array))
 				.on('end', () => {
 					res.status(204).end();
-					done();
 				})
-				.on('error', done)
+				.on('error', () => {
+					res.status(500).end()
+				})
 		})
 
-		request(server)
+		await request(server)
 			.post('/')
 			.send(mockReqBody[0])
-			.end();
+			.expect(204);
 	});
 });
