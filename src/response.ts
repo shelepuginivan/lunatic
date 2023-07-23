@@ -51,7 +51,7 @@ export class Response {
 		return this.send(html, 'text/html');
 	}
 
-	public async renderFile(path: string, options?: Record<string, unknown>) {
+	public async renderFile(path: string, options?: Record<string, unknown>): Promise<void> {
 		const stats = existsSync(path) && await stat(path);
 
 		if (!stats || stats.isDirectory()) {
@@ -64,7 +64,7 @@ export class Response {
 		return this.send(html, 'text/html');
 	}
 
-	public async send(content?: string | Buffer, mimetype?: string) {
+	public async send(content?: string | Buffer, mimetype?: string): Promise<void> {
 		if (content === undefined) {
 			return this.status(204).end();
 		}
