@@ -129,6 +129,16 @@ export class Response {
 		return this;
 	}
 
+	public removeHeader(name: string): this {
+		this.serverResponse.removeHeader(name);
+		return this;
+	}
+
+	public removeHeaders(headers: string[]): this {
+		headers.forEach((header) => this.serverResponse.removeHeader(header));
+		return this;
+	}
+
 	public status(status: number): Response {
 		this.serverResponse.statusCode = status;
 		return this;
