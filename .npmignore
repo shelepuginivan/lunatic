@@ -1,0 +1,15 @@
+node_modules/
+
+.github/
+logo.png
+
+.idea/
+
+src/
+
+tests/
+coverage/
+
+.eslintrc.json
+jest.config.js
+tsconfig.json
