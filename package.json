@@ -16,7 +16,7 @@
 	},
 	"keywords": [],
 	"author": "Shelepugin Ivan <shelepuginivan@gmail.com>",
-	"license": "ISC",
+	"license": "MIT",
 	"devDependencies": {
 		"@jest/globals": "^29.6.1",
 		"@types/node": "^20.4.2",
