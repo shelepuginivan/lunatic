@@ -1,6 +1,6 @@
 {
 	"name": "@shelepuginivan/lunatic",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Node.js backend framework",
 	"main": "./lib/index.js",
 	"types": "./lib/index.d.ts",
@@ -14,7 +14,11 @@
 		"import": "./lib/index.js",
 		"require": "./lib/index.js"
 	},
-	"keywords": ["Node.js", "backend", "framework"],
+	"keywords": [
+		"Node.js",
+		"backend",
+		"framework"
+	],
 	"author": "Shelepugin Ivan <shelepuginivan@gmail.com>",
 	"repository": {
 		"type": "git",
