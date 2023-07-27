@@ -16,6 +16,10 @@
 	},
 	"keywords": ["Node.js", "backend", "framework"],
 	"author": "Shelepugin Ivan <shelepuginivan@gmail.com>",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/shelepuginivan/lunatic"
+	},
 	"license": "MIT",
 	"devDependencies": {
 		"@jest/globals": "^29.6.1",
