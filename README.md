@@ -6,6 +6,12 @@ Node.js backend framework.
 
 </div>
 
+## Installation
+
+```shell
+npm i @shelepuginivan/lunatic
+```
+
 ## Features
 
 - Zero dependency
