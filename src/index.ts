@@ -1,5 +1,6 @@
 export * from './middlewares/body-parser';
 export * from './middlewares/cookie-parser';
+export * from './middlewares/cors';
 export * from './middlewares/form-parser';
 export * from './middlewares/serve-static';
 export * from './request';
