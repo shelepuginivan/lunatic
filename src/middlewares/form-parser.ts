@@ -19,7 +19,7 @@ export const formParser: RequestHandler = (req, _res, next) => {
 		.on('end', () => parseFormData());
 
 	const parseFormData = () => {
-		const formDataString = Buffer.concat(chunks).toString();
+		const formDataString = Buffer.concat(chunks).toString('binary');
 		const formParts = formDataString.split(`--${boundary}`);
 
 		formParts.shift();
@@ -46,7 +46,10 @@ export const formParser: RequestHandler = (req, _res, next) => {
 			}
 
 			const uploadedFile = {
-				data: Buffer.from(content.slice(0, -2)),	// trim trailing CRLF
+				data: Buffer.from(
+					content.slice(0, -2),	// trim trailing CRLF
+					'binary'
+				),
 				filename,
 				mimetype
 			};
