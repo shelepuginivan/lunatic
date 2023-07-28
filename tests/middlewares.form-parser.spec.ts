@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it } from '@jest/globals';
+import { readFile } from 'fs/promises';
 import { Server } from 'http';
+import { join } from 'path';
 import request from 'supertest';
 
 import { LunaticServer, Router, formParser } from '../src';
@@ -159,5 +161,29 @@ describe('middlewares/formParser()', () => {
 		await request(server)
 			.post('/')
 			.send({ some: 'data' });
+	});
+
+	it('Should parse binary data', async () => {
+		app.use(formParser);
+		app.post('/', (req, res) => {
+			expect(req.files).toEqual(files);
+			res.status(200).json(req.body as Record<string, string | string[]>);
+		})
+
+		const attachment = await readFile(join(__dirname, 'mocks', 'files', '1.png'))
+
+		const files = {
+			file: [
+				{
+					filename: '1.png',
+					data: attachment,
+					mimetype: 'image/png'
+				}
+			]
+		}
+
+		await request(server)
+			.post('/')
+			.attach('file', attachment, '1.png');
 	})
 });
