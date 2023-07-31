@@ -20,6 +20,10 @@ npm i @shelepuginivan/lunatic
 - Useful middlewares out-of-the-box
 - Written in TypeScript
 
+## Examples
+
+Examples available [here](https://github.com/shelepuginivan/lunatic-examples).
+
 ## Information
 
 This framework is a pet project. It was created to deepen the author's knowledge about backend development.
