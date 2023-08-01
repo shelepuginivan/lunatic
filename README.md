@@ -20,6 +20,10 @@ npm i @shelepuginivan/lunatic
 - Useful middlewares out-of-the-box
 - Written in TypeScript
 
+## Documentation
+
+The documentation is available on the [wiki](https://github.com/shelepuginivan/lunatic/wiki) tab.
+
 ## Examples
 
 Examples available [here](https://github.com/shelepuginivan/lunatic-examples).
