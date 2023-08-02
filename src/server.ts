@@ -18,6 +18,7 @@ export class LunaticServer extends Router {
 		this.callback = this.callback.bind(this);
 		this.httpServer = httpServer ?? createServer();
 		this.enabledFeatures = new Set<ApplicationFeature>([
+			'500-on-error',
 			'auto-head-handler',
 			'x-powered-by'
 		]);
@@ -64,13 +65,29 @@ export class LunaticServer extends Router {
 		if (this.enabledFeatures.has('x-powered-by')) {
 			response.setHeader('X-Powered-By', 'Lunatic');
 		}
+		
+		try {
+			super.handle(request, response, () => {
+				if (!res.writableEnded) {
+					res.statusCode = 501;
+					res.end();
+				}
+			});
+		} catch (error) {
+			if (!this.enabledFeatures.has('500-on-error')) {
+				throw error;
+			}
 
-		super.handle(request, response, () => {
+			/**
+			 * Sends 500 status code
+			 * if error occurred.
+			 * Enabled by default.
+			 */
 			if (!res.writableEnded) {
-				res.statusCode = 501;
+				res.statusCode = 500;
 				res.end();
 			}
-		});
+		}
 	}
 
 	public listen(port: number): Server {
