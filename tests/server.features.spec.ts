@@ -101,6 +101,16 @@ describe('LunaticServer features', () => {
 			.expect(501);
 	});
 
+	it('Should send 500 status if error occurred by default', async () => {
+		app.get('/', () => {
+			throw new Error('return 500');
+		});
+
+		await request(server)
+			.get('/')
+			.expect(500);
+	});
+
 	it('Should set X-Powered-By header by default', async () => {
 		app.get('/', (_req, res) => {
 			res.status(204).end();
