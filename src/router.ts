@@ -155,7 +155,7 @@ export class Router {
 		}
 
 		const routeTokens = route.split('/');
-		let urlTokens = path.split('/');
+		const urlTokens = path.split('/');
 
 		while (routeTokens.length && urlTokens.length) {
 			const routeToken = routeTokens.shift() as string;
@@ -169,11 +169,10 @@ export class Router {
 				params[routeToken.substring(1)] = urlToken;
 			} else if (routeToken.startsWith('...')) {
 				const paramLength = urlTokens.length - routeTokens.length;
-				params[routeToken.substring(3)] = [urlToken, ...urlTokens.slice(0, paramLength)];
-				urlTokens = urlTokens.slice(paramLength);
+				params[routeToken.substring(3)] = [urlToken, ...urlTokens.splice(0, paramLength)];
 			} else if (routeToken === '*') {
 				const paramLength = urlTokens.length - routeTokens.length;
-				urlTokens = urlTokens.slice(paramLength);
+				urlTokens.splice(0, paramLength);
 			} else if (routeToken !== urlToken) {
 				return [false, params];
 			}
