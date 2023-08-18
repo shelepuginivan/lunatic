@@ -22,11 +22,11 @@ npm i @shelepuginivan/lunatic
 
 ## Documentation
 
-The documentation is available on the [wiki](https://github.com/shelepuginivan/lunatic/wiki) tab.
+You can read the framework's documentation on its [website](https://lunatic.shelepugin.ru) or on the [wiki](https://github.com/shelepuginivan/lunatic/wiki) tab.
 
 ## Examples
 
-Examples available [here](https://github.com/shelepuginivan/lunatic-examples).
+Examples available [in a separate repository](https://github.com/shelepuginivan/lunatic-examples).
 
 ## Information
 
