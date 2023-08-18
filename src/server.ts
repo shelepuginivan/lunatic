@@ -65,7 +65,7 @@ export class LunaticServer extends Router {
 		if (this.enabledFeatures.has('x-powered-by')) {
 			response.setHeader('X-Powered-By', 'Lunatic');
 		}
-		
+
 		try {
 			super.handle(request, response, () => {
 				if (!res.writableEnded) {
