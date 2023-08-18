@@ -15,61 +15,61 @@ export class Router {
 	}
 
 	public use(handler: RequestHandler | Router): this
-	public use(route: string, handler: RequestHandler | Router): this
+	public use(path: string, handler: RequestHandler | Router): this
 	public use(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router) {
 		return this.addMiddleware('*', arg1, arg2);
 	}
 
 	public get(handler: RequestHandler | Router): this
-	public get(route: string, handler: RequestHandler | Router): this
+	public get(path: string, handler: RequestHandler | Router): this
 	public get(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
 		return this.addMiddleware('GET', arg1, arg2);
 	}
 
 	public head(handler: RequestHandler | Router): this
-	public head(route: string, handler: RequestHandler | Router): this
+	public head(path: string, handler: RequestHandler | Router): this
 	public head(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
 		return this.addMiddleware('HEAD', arg1, arg2);
 	}
 
 	public post(handler: RequestHandler | Router): this
-	public post(route: string, handler: RequestHandler | Router): this
+	public post(path: string, handler: RequestHandler | Router): this
 	public post(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
 		return this.addMiddleware('POST', arg1, arg2);
 	}
 
 	public put(handler: RequestHandler | Router): this
-	public put(route: string, handler: RequestHandler | Router): this
+	public put(path: string, handler: RequestHandler | Router): this
 	public put(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
 		return this.addMiddleware('PUT', arg1, arg2);
 	}
 
 	public delete(handler: RequestHandler | Router): this
-	public delete(route: string, handler: RequestHandler | Router): this
+	public delete(path: string, handler: RequestHandler | Router): this
 	public delete(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
 		return this.addMiddleware('DELETE', arg1, arg2);
 	}
 
 	public connect(handler: RequestHandler | Router): this
-	public connect(route: string, handler: RequestHandler | Router): this
+	public connect(path: string, handler: RequestHandler | Router): this
 	public connect(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
 		return this.addMiddleware('CONNECT', arg1, arg2);
 	}
 
 	public options(handler: RequestHandler | Router): this
-	public options(route: string, handler: RequestHandler | Router): this
+	public options(path: string, handler: RequestHandler | Router): this
 	public options(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
 		return this.addMiddleware('OPTIONS', arg1, arg2);
 	}
 
 	public trace(handler: RequestHandler | Router): this
-	public trace(route: string, handler: RequestHandler | Router): this
+	public trace(path: string, handler: RequestHandler | Router): this
 	public trace(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
 		return this.addMiddleware('TRACE', arg1, arg2);
 	}
 
 	public patch(handler: RequestHandler | Router): this
-	public patch(route: string, handler: RequestHandler | Router): this
+	public patch(path: string, handler: RequestHandler | Router): this
 	public patch(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
 		return this.addMiddleware('PATCH', arg1, arg2);
 	}
@@ -82,14 +82,14 @@ export class Router {
 				return next();
 			}
 
-			const { method, route, handler } = this.middlewares[i];
+			const { method, path, handler } = this.middlewares[i];
 			i++;
 
 			if (method !== '*' && req.method !== method) {
 				return nextHandler();
 			}
 
-			const [match, params] = this.matchRequest(req.path, route, handler);
+			const [match, params] = this.matchPaths(req.path, path, handler);
 
 			if (!match) {
 				return nextHandler();
@@ -97,7 +97,7 @@ export class Router {
 
 			if (handler instanceof Router) {
 				const modifiedRequest = Object.assign(Object.create(Object.getPrototypeOf(req)), req);
-				modifiedRequest.path = trimPathStart(req.path, route);
+				modifiedRequest.path = trimPathStart(req.path, path);
 				modifiedRequest.params = { ...req.params, ...params };
 
 				handler.handle(modifiedRequest, res, nextHandler);
@@ -120,13 +120,13 @@ export class Router {
 			this.middlewares.push({
 				method,
 				handler: arg3,
-				route: arg2
+				path: arg2
 			});
 		} else if (typeof arg2 !== 'string') {
 			this.middlewares.push({
 				method,
 				handler: arg2,
-				route: '*'
+				path: '*'
 			});
 		}
 
