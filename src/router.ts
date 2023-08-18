@@ -133,58 +133,58 @@ export class Router {
 		return this;
 	}
 
-	private matchRequest(
+	private matchPaths(
+		requestPath: string,
 		path: string,
-		route: string,
 		handler: RequestHandler | Router
 	): [boolean, Record<string, string | string[]>] {
+		requestPath = normalizePath(requestPath);
 		path = normalizePath(path);
-		route = normalizePath(route);
 
 		const params: Record<string, string | string[]> = {};
 
-		if (route === '*') {
+		if (path === '*') {
 			return [true, params];
 		}
 
 		if (
-			path === '/' && route !== '/' ||
-			path !== '/' && route === '/' && !(handler instanceof Router)
+			requestPath === '/' && path !== '/' ||
+			requestPath !== '/' && path === '/' && !(handler instanceof Router)
 		) {
 			return [false, params];
 		}
 
-		const routeTokens = route.split('/');
-		const urlTokens = path.split('/');
+		const pathTokens = path.split('/');
+		const requestPathTokens = requestPath.split('/');
 
-		while (routeTokens.length && urlTokens.length) {
-			const routeToken = routeTokens.shift() as string;
-			const urlToken = urlTokens.shift() as string;
+		while (pathTokens.length && requestPathTokens.length) {
+			const pathToken = pathTokens.shift() as string;
+			const requestPathToken = requestPathTokens.shift() as string;
 
-			if (routeToken === '' || urlToken === '') {
+			if (pathToken === '' || requestPathToken === '') {
 				continue;
 			}
 
-			if (routeToken[0] === ':') {
-				params[routeToken.substring(1)] = urlToken;
-			} else if (routeToken.startsWith('...')) {
-				const paramLength = urlTokens.length - routeTokens.length;
-				params[routeToken.substring(3)] = [urlToken, ...urlTokens.splice(0, paramLength)];
-			} else if (routeToken === '*') {
-				const paramLength = urlTokens.length - routeTokens.length;
-				urlTokens.splice(0, paramLength);
-			} else if (routeToken !== urlToken) {
+			if (pathToken[0] === ':') {
+				params[pathToken.substring(1)] = requestPathToken;
+			} else if (pathToken.startsWith('...')) {
+				const paramLength = requestPathTokens.length - pathTokens.length;
+				params[pathToken.substring(3)] = [requestPathToken, ...requestPathTokens.splice(0, paramLength)];
+			} else if (pathToken === '*') {
+				const paramLength = requestPathTokens.length - pathTokens.length;
+				requestPathTokens.splice(0, paramLength);
+			} else if (pathToken !== requestPathToken) {
 				return [false, params];
 			}
 		}
 
 		if (handler instanceof Router) {
-			return [routeTokens.length === 0, params];
+			return [pathTokens.length === 0, params];
 		}
 
 		return [
-			!routeTokens.length &&
-			!urlTokens.length,
+			!pathTokens.length &&
+			!requestPathTokens.length,
 			params
 		];
 	}
