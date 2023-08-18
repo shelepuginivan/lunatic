@@ -4,6 +4,6 @@ import { RequestHandler } from './request-handler';
 
 export interface Middleware {
 	method: HttpMethod
-	route: string
+	path: string
 	handler: RequestHandler | Router
 }
