@@ -13,3 +13,4 @@ export * from './types/next-handler';
 export * from './types/render-function';
 export * from './types/request-handler';
 export * from './types/uploaded-file';
+export { Status } from './utils/constants';
