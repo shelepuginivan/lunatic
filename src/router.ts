@@ -85,17 +85,19 @@ export class Router {
 			const { method, path, handler } = this.middlewares[i];
 			i++;
 
+			const isRouter = handler instanceof Router
+
 			if (method !== '*' && req.method !== method) {
 				return nextHandler();
 			}
 
-			const [match, params] = this.matchPaths(req.path, path, handler);
+			const [match, params] = this.matchPaths(req.path, path, isRouter);
 
 			if (!match) {
 				return nextHandler();
 			}
 
-			if (handler instanceof Router) {
+			if (isRouter) {
 				const modifiedRequest = Object.assign(Object.create(Object.getPrototypeOf(req)), req);
 				modifiedRequest.path = trimPathStart(req.path, path);
 				modifiedRequest.params = { ...req.params, ...params };
@@ -136,7 +138,7 @@ export class Router {
 	private matchPaths(
 		requestPath: string,
 		path: string,
-		handler: RequestHandler | Router
+		isRouter: boolean
 	): [boolean, Record<string, string | string[]>] {
 		requestPath = normalizePath(requestPath);
 		path = normalizePath(path);
@@ -149,7 +151,7 @@ export class Router {
 
 		if (
 			requestPath === '/' && path !== '/' ||
-			requestPath !== '/' && path === '/' && !(handler instanceof Router)
+			requestPath !== '/' && path === '/' && !isRouter
 		) {
 			return [false, params];
 		}
@@ -178,7 +180,7 @@ export class Router {
 			}
 		}
 
-		if (handler instanceof Router) {
+		if (isRouter) {
 			return [pathTokens.length === 0, params];
 		}
 
