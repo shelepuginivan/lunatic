@@ -46,7 +46,11 @@ describe('Router', () => {
 
 		app.get('/some/:param/route', (req, res) => {
 			res.status(200).json(req.params);
-		})
+		});
+
+		app.get('/multiple/:a/:b/:c/:d/:e', (req, res) => {
+			res.status(200).json(req.params);
+		});
 
 		await request(server)
 			.get('/928347203847')
@@ -62,6 +66,11 @@ describe('Router', () => {
 			.get('/some/value/route')
 			.expect(200)
 			.expect({ param: 'value' });
+
+		await request(server)
+			.get('/multiple/1/2/3/4/5')
+			.expect(200)
+			.expect({ a: '1', b: '2', c: '3', d: '4', e: '5' });
 	});
 
 	it('Should support dynamic routes (...)', async () => {
@@ -73,6 +82,10 @@ describe('Router', () => {
 			res.status(200).json(req.params);
 		});
 
+		app.get('/multiple/...parts1/...parts2', async (req, res) => {
+			res.status(200).json(req.params);
+		});
+
 		await request(server)
 			.get('/data/a/b/c/d/e/f')
 			.expect(200)
@@ -81,7 +94,12 @@ describe('Router', () => {
 		await request(server)
 			.get('/another/1/2/3/data')
 			.expect(200)
-			.expect({ tokens: ['1', '2', '3'] })
+			.expect({ tokens: ['1', '2', '3'] });
+
+		await request(server)
+			.get('/multiple/1/2/3/4/5/6')
+			.expect(200)
+			.expect({ parts1: ['1', '2', '3', '4', '5'], parts2: ['6'] });
 	});
 
 	it('Should support dynamic routes (*)', async () => {
