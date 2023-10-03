@@ -130,6 +130,44 @@ describe('Router', () => {
 			.expect(501);
 	});
 
+	it('Should support combinations of dynamic paths', async () => {
+		app.get('/__1__/...tokens/:a/:b/:c', (req, res) => {
+			res.status(200).json(req.params);
+		});
+
+		app.get('/__2__/:a/:b/:c/*', (req, res) => {
+			res.status(200).json(req.params);
+		});
+
+		app.get('/__3__/*/:a/:b', (req, res) => {
+			res.status(200).json(req.params);
+		});
+
+		app.get('/__4__/...parts1/:p/...parts2', (req, res) => {
+			res.status(200).json(req.params);
+		});
+
+		await request(server)
+			.get('/__1__/1/2/3/4/5/6')
+			.expect(200)
+			.expect({ tokens: ['1', '2', '3'], a: '4', b: '5', c: '6' });
+
+		await request(server)
+			.get('/__2__/1/2/3/a/b/c/d/e/d')
+			.expect(200)
+			.expect({ a: '1', b: '2', c: '3' });
+
+		await request(server)
+			.get('/__3__/a/b/c/d/e/f/1/2')
+			.expect(200)
+			.expect({ a: '1', b: '2' });
+
+		await request(server)
+			.get('/__4__/a/b/c/d/e/1/2')
+			.expect(200)
+			.expect({ parts1: ['a', 'b', 'c', 'd', 'e'], p: '1', parts2: ['2'] });
+	});
+
 	it('Should ignore search', (done) => {
 		const router = new Router();
 
