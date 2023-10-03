@@ -27,7 +27,7 @@ describe('Request', () => {
 			expect(req).toHaveProperty('query');
 
 			res.status(204).end();
-		})
+		});
 
 		await request(server).get('/');
 	});
@@ -41,7 +41,7 @@ describe('Request', () => {
 			expect(req.query).toEqual({});
 
 			res.status(204).end();
-		})
+		});
 
 		app.post('/some/endpoint', (req, res) => {
 			expect(req.method).toBe('POST');
@@ -52,7 +52,7 @@ describe('Request', () => {
 			expect(req.query).toEqual({});
 
 			res.status(204).end();
-		})
+		});
 
 		await request(server).get('/');
 
@@ -63,18 +63,18 @@ describe('Request', () => {
 
 	it('Should have query if request url contains search', async () => {
 		app.get('/', (req, res) => {
-			expect(req.query).toEqual({ page: '1', limit: '10' })
+			expect(req.query).toEqual({ page: '1', limit: '10' });
 			res.status(204).end();
-		})
+		});
 
 		await request(server).get('/?page=1&limit=10');
 	});
 
 	it('Should have params if route is dynamic', async () => {
 		app.get('/:id', (req, res) => {
-			expect(req.params).toEqual({ id: '38902384' })
+			expect(req.params).toEqual({ id: '38902384' });
 			res.status(204).end();
-		})
+		});
 
 		await request(server).get('/38902384');
 	});

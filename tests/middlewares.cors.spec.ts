@@ -12,7 +12,7 @@ describe('middlewares/cors()', () => {
 	beforeEach(() => {
 		app = new LunaticServer();
 		server = new Server(app.callback);
-	})
+	});
 
 	it('Should set CORS headers for CORS requests', async () => {
 		app.use(cors());
@@ -25,7 +25,7 @@ describe('middlewares/cors()', () => {
 			.set('Origin', 'https://example.com')
 			.expect('Access-Control-Allow-Origin', '*')
 			.expect('Vary', 'Origin')
-			.expect('Access-Control-Allow-Methods', '*')
+			.expect('Access-Control-Allow-Methods', '*');
 
 		expect(res.headers).not.toHaveProperty('access-control-allow-credentials');
 	});
@@ -41,8 +41,8 @@ describe('middlewares/cors()', () => {
 			.set('Origin', 'https://example.com')
 			.expect('Access-Control-Allow-Origin', '*')
 			.expect('Vary', 'Origin')
-			.expect('Access-Control-Allow-Methods', '*')
-	})
+			.expect('Access-Control-Allow-Methods', '*');
+	});
 
 	it('Should support configuration', async () => {
 		const corsOptions1: CorsOptions = {
@@ -115,7 +115,7 @@ describe('middlewares/cors()', () => {
 		await request(server)
 			.options('/cors2')
 			.set('Origin', 'http://localhost:3000')
-			.expect(403)
+			.expect(403);
 
 		await request(server)
 			.options('/cors3')
@@ -223,7 +223,7 @@ describe('middlewares/cors()', () => {
 	it('Should support predicate function as origin option', async () => {
 		const predicate = (origin: string) => {
 			return origin.startsWith('https');
-		}
+		};
 
 		const corsOptions: CorsOptions = {
 			origin: predicate
@@ -300,5 +300,5 @@ describe('middlewares/cors()', () => {
 		await request(server)
 			.get('/')
 			.expect(200);
-	})
+	});
 });

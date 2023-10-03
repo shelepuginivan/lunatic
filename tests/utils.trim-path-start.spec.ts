@@ -1,4 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
+
 import { trimPathStart } from '../src/utils/trim-path-start';
 
 describe('utils/trimPathStart()', () => {
@@ -10,6 +11,6 @@ describe('utils/trimPathStart()', () => {
 		expect(trimPathStart('/', '/a/b/c/d')).toBe('/');
 		expect(
 			trimPathStart('/username/article/3809842093', '/928347203847')
-		).toBe('/article/3809842093')
-	})
-})
+		).toBe('/article/3809842093');
+	});
+});

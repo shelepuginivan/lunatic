@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, it } from '@jest/globals';
+import { readFile } from 'fs/promises';
 import { Server } from 'http';
+import { join } from 'path';
 import request from 'supertest';
 
-import { mockReqFiles } from './mocks/req.files.mock';
 import { cookieParser, LunaticServer } from '../src';
-import { join } from 'path';
-import { readFile } from 'fs/promises';
+import { mockReqFiles } from './mocks/req.files.mock';
 
 describe('Response', () => {
 	let app: LunaticServer;
@@ -19,7 +19,7 @@ describe('Response', () => {
 	it('Should be able to be sent on client', (done) => {
 		app.get('/', (_req, res) => {
 			res.end();
-		})
+		});
 
 		request(server)
 			.get('/')
@@ -149,7 +149,7 @@ describe('Response', () => {
 			.get('/')
 			.expect(
 				'Set-Cookie',
-				`some=value; Path=/; SameSite=Lax,another=930434; Path=/; SameSite=Lax`
+				'some=value; Path=/; SameSite=Lax,another=930434; Path=/; SameSite=Lax'
 			);
 	});
 
@@ -227,7 +227,7 @@ describe('Response', () => {
 	});
 
 	it('Should be able to send files', async () => {
-		const path = join(__dirname, 'mocks', 'files', '1.png')
+		const path = join(__dirname, 'mocks', 'files', '1.png');
 		const imageBuffer = await readFile(path);
 
 		app.get('/', (_req, res) => {
@@ -243,7 +243,7 @@ describe('Response', () => {
 	});
 
 	it('Should respond with 404 if file does not exist', async () => {
-		const path = join(__dirname, 'mocks', 'files', '__does_not_exist__.txt')
+		const path = join(__dirname, 'mocks', 'files', '__does_not_exist__.txt');
 
 		app.get('/', (_req, res) => {
 			res.status(200).sendFile(path);
@@ -255,7 +255,7 @@ describe('Response', () => {
 	});
 
 	it('Should respond with 404 if provided path is a directory', async () => {
-		const path = join(__dirname, 'mocks', 'files')
+		const path = join(__dirname, 'mocks', 'files');
 
 		app.get('/', (_req, res) => {
 			res.status(200).sendFile(path);

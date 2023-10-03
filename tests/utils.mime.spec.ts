@@ -12,13 +12,13 @@ describe('utils/Mime', () => {
 			'.jpeg': 'image/jpeg',
 			'.txt': 'text/plain',
 			'.xml': 'application/xml'
-		}
+		};
 
 		for (const ext in extensions) {
 			const expectedType = extensions[ext];
 			const type = Mime.get(ext);
 
-			expect(type).toBe(expectedType)
+			expect(type).toBe(expectedType);
 		}
 	});
 

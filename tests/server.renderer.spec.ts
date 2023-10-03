@@ -1,10 +1,10 @@
 import { beforeEach, describe, it } from '@jest/globals';
+import { readFile } from 'fs/promises';
 import { Server } from 'http';
+import { join } from 'path';
 import request from 'supertest';
 
 import { LunaticServer, RenderFunction } from '../src';
-import { readFile } from 'fs/promises';
-import { join } from 'path';
 
 describe('LunaticServer.renderer()', () => {
 	let app: LunaticServer;
@@ -16,7 +16,7 @@ describe('LunaticServer.renderer()', () => {
 	});
 
 	it('Should render the exact content by default', async () => {
-		const html = '<h1>Hello world</h1>'
+		const html = '<h1>Hello world</h1>';
 
 		app.get('/', (_req, res) => {
 			res.render(html);
@@ -29,7 +29,7 @@ describe('LunaticServer.renderer()', () => {
 	});
 
 	it('Should be able to use custom render functions', async () => {
-		const html = '<h1>{{ value }}</h1>'
+		const html = '<h1>{{ value }}</h1>';
 
 		const renderFunction: RenderFunction = (source, options) => {
 			for (const key in options) {
@@ -37,7 +37,7 @@ describe('LunaticServer.renderer()', () => {
 			}
 
 			return source;
-		}
+		};
 
 		app.renderer(renderFunction);
 
@@ -66,7 +66,7 @@ describe('LunaticServer.renderer()', () => {
 			}
 
 			return source;
-		}
+		};
 
 		app.renderer(renderFunction);
 
@@ -83,7 +83,7 @@ describe('LunaticServer.renderer()', () => {
 	});
 
 	it('Should respond with 404 if file does not exist', async () => {
-		const path = join(__dirname, 'mocks', 'files', '__does_not_exist__.html')
+		const path = join(__dirname, 'mocks', 'files', '__does_not_exist__.html');
 
 		app.get('/', (_req, res) => {
 			res.status(200).renderFile(path);
@@ -95,7 +95,7 @@ describe('LunaticServer.renderer()', () => {
 	});
 
 	it('Should respond with 404 if provided path is a directory', async () => {
-		const path = join(__dirname, 'mocks', 'files')
+		const path = join(__dirname, 'mocks', 'files');
 
 		app.get('/', (_req, res) => {
 			res.status(200).renderFile(path);

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from '@jest/globals';
 import { Server } from 'http';
 import request from 'supertest';
 
-import { LunaticServer, Router, bodyParser } from '../src';
+import { bodyParser,LunaticServer, Router } from '../src';
 import { mockReqBody } from './mocks/req.body.mock';
 
 
@@ -45,7 +45,7 @@ describe('middlewares/bodyParser()', () => {
 		anotherRouter.post('/body', (req, res) => {
 			expect(req.body).toBeUndefined();
 			res.status(422).end();
-		})
+		});
 
 		app.use('/', router);
 		app.use('/another', anotherRouter);
@@ -77,7 +77,7 @@ describe('middlewares/bodyParser()', () => {
 			res.status(200).text(req.body as string);
 		});
 
-		const body = 'some_text'
+		const body = 'some_text';
 
 		request(server)
 			.post('/')

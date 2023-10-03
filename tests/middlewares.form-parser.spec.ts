@@ -4,7 +4,7 @@ import { Server } from 'http';
 import { join } from 'path';
 import request from 'supertest';
 
-import { LunaticServer, Router, formParser } from '../src';
+import { formParser,LunaticServer, Router } from '../src';
 import { mockReqFiles } from './mocks/req.files.mock';
 
 
@@ -22,9 +22,9 @@ describe('middlewares/formParser()', () => {
 		app.post('/', (req, res) => {
 			expect(req.files).toEqual(files);
 			res.status(200).json(req.body as Record<string, string | string[]>);
-		})
+		});
 
-		const attachment = mockReqFiles[0]
+		const attachment = mockReqFiles[0];
 
 		const files = {
 			file: [
@@ -34,7 +34,7 @@ describe('middlewares/formParser()', () => {
 					mimetype: 'text/plain'
 				}
 			]
-		}
+		};
 
 		const body: Record<string, string> = {
 			a: '1',
@@ -49,7 +49,7 @@ describe('middlewares/formParser()', () => {
 			.attach('file', attachment, '1.txt')
 			.expect(200)
 			.expect(body)
-			.end(done)
+			.end(done);
 	});
 
 	it('Should be able to parse multiple files from same field', (done) => {
@@ -57,7 +57,7 @@ describe('middlewares/formParser()', () => {
 		app.post('/', (req, res) => {
 			expect(req.files).toEqual(files);
 			res.status(200).json(req.body as Record<string, string | string[]>);
-		})
+		});
 
 		const attachment1 = mockReqFiles[0];
 		const attachment2 = mockReqFiles[1];
@@ -75,7 +75,7 @@ describe('middlewares/formParser()', () => {
 					mimetype: 'text/plain'
 				}
 			]
-		}
+		};
 
 		const body: Record<string, string> = {
 			a: '1',
@@ -91,23 +91,23 @@ describe('middlewares/formParser()', () => {
 			.attach('file', attachment2, '2.txt')
 			.expect(200)
 			.expect(body)
-			.end(done)
+			.end(done);
 	});
 
 	it('Should work in Router', (done) => {
 		const router = new Router();
 
-		router.use(formParser)
+		router.use(formParser);
 		router.post('/', (req, res) => {
-			expect(req.files).toEqual(files)
+			expect(req.files).toEqual(files);
 			res.status(200).json(body);
-		})
+		});
 
 		app.use('/router', router);
 		app.post('/form', (req, res) => {
 			expect(req.files).toBeUndefined();
 			expect(req.body).toBeUndefined();
-			res.status(204).end()
+			res.status(204).end();
 		});
 
 		const attachment = mockReqFiles[1];
@@ -156,7 +156,7 @@ describe('middlewares/formParser()', () => {
 			expect(req.files).toBeUndefined();
 			expect(req.body).toBeUndefined();
 			res.status(200).json(req.body as Record<string, string | string[]>);
-		})
+		});
 
 		await request(server)
 			.post('/')
@@ -168,9 +168,9 @@ describe('middlewares/formParser()', () => {
 		app.post('/', (req, res) => {
 			expect(req.files).toEqual(files);
 			res.status(200).json(req.body as Record<string, string | string[]>);
-		})
+		});
 
-		const attachment = await readFile(join(__dirname, 'mocks', 'files', '1.png'))
+		const attachment = await readFile(join(__dirname, 'mocks', 'files', '1.png'));
 
 		const files = {
 			file: [
@@ -180,10 +180,10 @@ describe('middlewares/formParser()', () => {
 					mimetype: 'image/png'
 				}
 			]
-		}
+		};
 
 		await request(server)
 			.post('/')
 			.attach('file', attachment, '1.png');
-	})
+	});
 });

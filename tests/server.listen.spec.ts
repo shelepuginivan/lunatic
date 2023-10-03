@@ -6,7 +6,7 @@ describe('LunaticServer.listen()', () => {
 	let app: LunaticServer;
 
 	beforeEach(() => {
-		app = new LunaticServer()
+		app = new LunaticServer();
 	});
 
 	it('Should start server', (done) => {

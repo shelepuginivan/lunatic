@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it } from '@jest/globals';
-import { LunaticServer, Router } from '../src';
 import { Server } from 'http';
 import request from 'supertest';
+
+import { LunaticServer, Router } from '../src';
 import { mockReqBody } from './mocks/req.body.mock';
 
 describe('LunaticServer features', () => {
@@ -11,12 +12,12 @@ describe('LunaticServer features', () => {
 	beforeEach(() => {
 		app = new LunaticServer();
 		server = new Server(app.callback);
-	})
+	});
 
 	it('Should respond to HEAD requests', async () => {
 		app.get('/', (_req, res) => {
 			res.status(200).json(mockReqBody[0]);
-		})
+		});
 
 		await request(server).head('/').expect(204);
 	});
@@ -31,7 +32,7 @@ describe('LunaticServer features', () => {
 				.setHeader('X-Total-Count', 1)
 				.status(200)
 				.json(body);
-		})
+		});
 
 		await request(server).head('/')
 			.expect(204)
@@ -44,7 +45,7 @@ describe('LunaticServer features', () => {
 
 		app.get('/', (_req, res) => {
 			res.status(200).json(body);
-		})
+		});
 
 		await request(server)
 			.get('/')
@@ -64,9 +65,9 @@ describe('LunaticServer features', () => {
 
 		router.get('/', (_req, res) => {
 			res.status(200).json(body);
-		})
+		});
 
-		app.use('/router', router)
+		app.use('/router', router);
 
 		await request(server)
 			.get('/router')
@@ -86,7 +87,7 @@ describe('LunaticServer features', () => {
 
 		router.get('/', (_req, res) => {
 			res.status(200).json(body);
-		})
+		});
 
 		app.disable('auto-head-handler');
 		app.use('/router', router);
@@ -114,7 +115,7 @@ describe('LunaticServer features', () => {
 	it('Should set X-Powered-By header by default', async () => {
 		app.get('/', (_req, res) => {
 			res.status(204).end();
-		})
+		});
 
 		await request(server)
 			.get('/')
@@ -125,8 +126,8 @@ describe('LunaticServer features', () => {
 		app
 			.disable('x-powered-by')
 			.get('/', (_req, res) => {
-			res.status(204).end();
-		})
+				res.status(204).end();
+			});
 
 		const res = await request(server).get('/');
 
@@ -139,7 +140,7 @@ describe('LunaticServer features', () => {
 		app.get('/', (_req, res) => {
 			app.enable('x-powered-by');
 			res.status(204).end();
-		})
+		});
 
 		const res = await request(server).get('/');
 
@@ -170,5 +171,5 @@ describe('LunaticServer features', () => {
 		await request(server)
 			.get('/')
 			.expect('X-Powered-By', 'Lunatic');
-	})
+	});
 });

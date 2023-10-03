@@ -1,4 +1,4 @@
-import { describe, it, beforeEach, expect } from '@jest/globals';
+import { beforeEach, describe, expect,it } from '@jest/globals';
 import { Server } from 'http';
 import request from 'supertest';
 
@@ -16,7 +16,7 @@ describe('Router.use()', () => {
 	it('Should register request handler', async () => {
 		app.use('/', (_req, res) => {
 			res.status(204).end();
-		})
+		});
 
 		await request(server)
 			.get('/')
@@ -26,7 +26,7 @@ describe('Router.use()', () => {
 	it('Should handle any method', async () => {
 		app.use('/', (_req, res) => {
 			res.status(204).end();
-		})
+		});
 
 		await request(server)
 			.get('/')
@@ -65,15 +65,15 @@ describe('Router.use()', () => {
 		const router = new Router();
 
 		router.get('/', (_req, res) => {
-			res.status(204).end()
+			res.status(204).end();
 		});
 
 		router.get('/route', (_req, res) => {
-			res.status(204).end()
+			res.status(204).end();
 		});
 
 		app.use('/router', router);
-		app.use('/another/endpoint', router)
+		app.use('/another/endpoint', router);
 
 		await request(server)
 			.get('/router')
@@ -85,9 +85,9 @@ describe('Router.use()', () => {
 	});
 
 	it('Should be able to register nested Routers', async () => {
-		const router = new Router()
-		const innerRouter = new Router()
-		const innerInnerRouter = new Router()
+		const router = new Router();
+		const innerRouter = new Router();
+		const innerInnerRouter = new Router();
 
 		innerInnerRouter.get('/inner', (_req, res) => {
 			res.status(201).end();
@@ -95,29 +95,29 @@ describe('Router.use()', () => {
 
 		innerRouter.use('/inner', innerInnerRouter);
 		router.use('/inner', innerRouter);
-		app.use('/inner', router)
+		app.use('/inner', router);
 
 		await request(server)
 			.get('/inner/inner/inner/inner')
 			.expect(201);
-	})
+	});
 
 	it('Should be able to register many nested Routers', async () => {
-		let router = new Router()
-		let newRouter = new Router()
+		let router = new Router();
+		let newRouter = new Router();
 		let i: number;
 
-		app.use('/', router)
+		app.use('/', router);
 
 		for (i = 0; i < 1000; i++) {
 			newRouter = new Router();
 			router.use('/', newRouter);
-			router = newRouter
+			router = newRouter;
 		}
 
 		newRouter.get('/', (_req, res) => {
-			res.status(200).json({ i })
-		})
+			res.status(200).json({ i });
+		});
 
 		await request(server)
 			.get('/')
@@ -131,13 +131,13 @@ describe('Router.use()', () => {
 		for (let i = 0; i < 1000; i++) {
 			app.use('/', (_req, _res, next) => {
 				callNumber++;
-				next()
+				next();
 			});
 		}
 
 		app.get('/', (_req, res) => {
-			res.status(200).json({ callNumber })
-		})
+			res.status(200).json({ callNumber });
+		});
 
 		await request(server)
 			.get('/')
@@ -147,12 +147,12 @@ describe('Router.use()', () => {
 
 	it('Should call middlewares in correct order', async () => {
 		const callOrder: string[] = [];
-		const expectedCallOrder = ['a', 'b', 'c', 'd', 'e']
+		const expectedCallOrder = ['a', 'b', 'c', 'd', 'e'];
 
 		const middleware = (letter: string): RequestHandler => (_req, _res, next) => {
 			callOrder.push(letter);
 			next();
-		}
+		};
 
 		app.use(middleware('a'));
 		app.use(middleware('b'));
@@ -161,7 +161,7 @@ describe('Router.use()', () => {
 		app.use(middleware('e'));
 		app.get('/', (_req, res) => {
 			res.status(204).end();
-		})
+		});
 
 		await request(server)
 			.get('/')

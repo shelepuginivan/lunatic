@@ -1,8 +1,8 @@
 import { beforeEach, describe, it } from '@jest/globals';
 import { Server } from 'http';
-import request from 'supertest'
+import request from 'supertest';
 
-import { LunaticServer, Router } from '../src'
+import { LunaticServer, Router } from '../src';
 
 
 describe('Router.post()', () => {
@@ -10,7 +10,7 @@ describe('Router.post()', () => {
 	let server: Server;
 
 	beforeEach(() => {
-		app = new LunaticServer()
+		app = new LunaticServer();
 		server = new Server(app.callback);
 	});
 
@@ -18,8 +18,8 @@ describe('Router.post()', () => {
 		const router = new Router();
 
 		router.post('/router', (_req, res) => {
-			res.status(204).end()
-		})
+			res.status(204).end();
+		});
 
 		app.use('/', router);
 
@@ -33,8 +33,8 @@ describe('Router.post()', () => {
 		const router = new Router();
 
 		router.post('/router', (_req, res) => {
-			res.status(204).end()
-		})
+			res.status(204).end();
+		});
 
 		app.use('/', router);
 
@@ -42,5 +42,5 @@ describe('Router.post()', () => {
 			.get('/router')
 			.expect(501)
 			.end(done);
-	})
+	});
 });

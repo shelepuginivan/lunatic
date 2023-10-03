@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it } from '@jest/globals';
+import { readFile, stat, writeFile } from 'fs/promises';
 import { Server } from 'http';
+import { join } from 'path';
 import request from 'supertest';
 
 import { LunaticServer, serveStatic, ServeStaticOptions } from '../src';
-import { join } from 'path';
-import { readFile, stat, writeFile } from 'fs/promises';
 import { CRLF } from '../src/utils/constants';
 
 
@@ -112,11 +112,11 @@ describe('middlewares/serveStatic()', () => {
 			dotfiles: 'allow',
 			index: '1.png',
 			etag: false
-		}
+		};
 
 		const serveStaticOptions2: ServeStaticOptions = {
 			dotfiles: 'forbid',
-		}
+		};
 
 		app.use('/static1', serveStatic(join(__dirname, 'mocks', 'files'), serveStaticOptions1));
 		app.use('/static2', serveStatic(join(__dirname, 'mocks', 'files'), serveStaticOptions2));
@@ -197,9 +197,9 @@ describe('middlewares/serveStatic()', () => {
 		const simulateContentChange = async () => {
 			const file = join(__dirname, 'mocks', 'files', 'modify.txt');
 			const content = await readFile(file);
-			await writeFile(file, content + CRLF)
+			await writeFile(file, content + CRLF);
 			await writeFile(file, content);
-		}
+		};
 
 		app.use('/', serveStatic(join(__dirname, 'mocks', 'files'),));
 

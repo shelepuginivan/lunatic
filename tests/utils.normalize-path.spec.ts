@@ -33,5 +33,5 @@ describe('utils/normalizeRoute()', () => {
 
 	it('Should not modify "*"', () => {
 		expect(normalizePath('*')).toBe('*');
-	})
+	});
 });

@@ -1,9 +1,8 @@
 import { beforeEach, describe, expect, it } from '@jest/globals';
 import { Server } from 'http';
-import request from 'supertest'
+import request from 'supertest';
 
-import { LunaticServer, RequestHandler } from '../src';
-import { Router } from '../src';
+import { LunaticServer, RequestHandler, Router } from '../src';
 
 describe('Router', () => {
 	let app: LunaticServer;
@@ -173,13 +172,13 @@ describe('Router', () => {
 
 		router.get('/posts', (_req, res) => {
 			res.status(200).end();
-		})
+		});
 
 		app.get('/', (_req, res) => {
 			res.status(204).end();
-		})
+		});
 
-		app.use('/api', router)
+		app.use('/api', router);
 
 		request(server)
 			.get('/?id=219309132890')
@@ -194,6 +193,5 @@ describe('Router', () => {
 			.get('/api/posts?page=1&limit=10')
 			.expect(200)
 			.end(done);
-
-	})
+	});
 });
