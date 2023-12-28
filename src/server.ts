@@ -8,8 +8,8 @@ import { RenderFunction } from './types/render-function';
 
 export class LunaticServer extends Router {
 	public renderFunction: RenderFunction;
+	public readonly httpServer: Server;
 	private readonly enabledFeatures: Set<ApplicationFeature>;
-	private readonly httpServer: Server;
 
 	constructor(httpServer?: Server) {
 		super();
