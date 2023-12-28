@@ -10,9 +10,8 @@ describe('LunaticServer.listen()', () => {
 	});
 
 	it('Should start server', (done) => {
-		const server = app.listen(5124);
-
-		expect(server.listening).toBe(true);
-		server.close(done);
+		app.listen(5124)
+			.then(() => expect(app.httpServer.listening).toBe(true))
+			.then(() => app.httpServer.close(done));
 	});
 });

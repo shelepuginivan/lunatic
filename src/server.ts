@@ -8,8 +8,8 @@ import { RenderFunction } from './types/render-function';
 
 export class LunaticServer extends Router {
 	public renderFunction: RenderFunction;
+	public readonly httpServer: Server;
 	private readonly enabledFeatures: Set<ApplicationFeature>;
-	private readonly httpServer: Server;
 
 	constructor(httpServer?: Server) {
 		super();
@@ -90,9 +90,16 @@ export class LunaticServer extends Router {
 		}
 	}
 
-	public listen(port: number): Server {
+	public listen(
+		port?: number,
+		hostname?: string,
+		backlog?: number,
+	): Promise<void> {
 		this.httpServer.on('request', this.callback);
-		return this.httpServer.listen(port);
+
+		return new Promise((resolve: () => void) => {
+			this.httpServer.listen(port, hostname, backlog, resolve);
+		});
 	}
 
 	public renderer(renderFunction: RenderFunction): this {

@@ -14,62 +14,82 @@ export class Router {
 		this.middlewares = [];
 	}
 
-	public use(handler: RequestHandler | Router): this
-	public use(path: string, handler: RequestHandler | Router): this
+	public use(handler: RequestHandler): this
+	public use(router: Router): this
+	public use(path: string, handler: RequestHandler): this
+	public use(path: string, router: Router): this
 	public use(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router) {
 		return this.addMiddleware('*', arg1, arg2);
 	}
 
-	public get(handler: RequestHandler | Router): this
-	public get(path: string, handler: RequestHandler | Router): this
+	public get(handler: RequestHandler): this
+	public get(router: Router): this
+	public get(path: string, handler: RequestHandler): this
+	public get(path: string, router: Router): this
 	public get(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
 		return this.addMiddleware('GET', arg1, arg2);
 	}
 
-	public head(handler: RequestHandler | Router): this
-	public head(path: string, handler: RequestHandler | Router): this
+	public head(handler: RequestHandler): this
+	public head(router: Router): this
+	public head(path: string, handler: RequestHandler): this
+	public head(path: string, router: Router): this
 	public head(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
 		return this.addMiddleware('HEAD', arg1, arg2);
 	}
 
-	public post(handler: RequestHandler | Router): this
-	public post(path: string, handler: RequestHandler | Router): this
+	public post(handler: RequestHandler): this
+	public post(router: Router): this
+	public post(path: string, handler: RequestHandler): this
+	public post(path: string, router: Router): this
 	public post(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
 		return this.addMiddleware('POST', arg1, arg2);
 	}
 
-	public put(handler: RequestHandler | Router): this
-	public put(path: string, handler: RequestHandler | Router): this
+	public put(handler: RequestHandler): this
+	public put(router: Router): this
+	public put(path: string, handler: RequestHandler): this
+	public put(path: string, router: Router): this
 	public put(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
 		return this.addMiddleware('PUT', arg1, arg2);
 	}
 
-	public delete(handler: RequestHandler | Router): this
-	public delete(path: string, handler: RequestHandler | Router): this
+	public delete(handler: RequestHandler): this
+	public delete(router: Router): this
+	public delete(path: string, handler: RequestHandler): this
+	public delete(path: string, router: Router): this
 	public delete(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
 		return this.addMiddleware('DELETE', arg1, arg2);
 	}
 
-	public connect(handler: RequestHandler | Router): this
-	public connect(path: string, handler: RequestHandler | Router): this
+	public connect(handler: RequestHandler): this
+	public connect(router: Router): this
+	public connect(path: string, handler: RequestHandler): this
+	public connect(path: string, router: Router): this
 	public connect(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
 		return this.addMiddleware('CONNECT', arg1, arg2);
 	}
 
-	public options(handler: RequestHandler | Router): this
-	public options(path: string, handler: RequestHandler | Router): this
+	public options(handler: RequestHandler): this
+	public options(router: Router): this
+	public options(path: string, handler: RequestHandler): this
+	public options(path: string, router: Router): this
 	public options(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
 		return this.addMiddleware('OPTIONS', arg1, arg2);
 	}
 
-	public trace(handler: RequestHandler | Router): this
-	public trace(path: string, handler: RequestHandler | Router): this
+	public trace(handler: RequestHandler): this
+	public trace(router: Router): this
+	public trace(path: string, handler: RequestHandler): this
+	public trace(path: string, router: Router): this
 	public trace(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
 		return this.addMiddleware('TRACE', arg1, arg2);
 	}
 
-	public patch(handler: RequestHandler | Router): this
-	public patch(path: string, handler: RequestHandler | Router): this
+	public patch(handler: RequestHandler): this
+	public patch(router: Router): this
+	public patch(path: string, handler: RequestHandler): this
+	public patch(path: string, router: Router): this
 	public patch(arg1: string | RequestHandler | Router, arg2?: RequestHandler | Router): this {
 		return this.addMiddleware('PATCH', arg1, arg2);
 	}
@@ -85,7 +105,7 @@ export class Router {
 			const { method, path, handler } = this.middlewares[i];
 			i++;
 
-			const isRouter = handler instanceof Router
+			const isRouter = handler instanceof Router;
 
 			if (method !== '*' && req.method !== method) {
 				return nextHandler();

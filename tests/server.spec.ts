@@ -8,9 +8,8 @@ describe('LunaticServer', () => {
 		const server = new Server();
 		const app = new LunaticServer(server);
 
-		app.listen(8000);
-
-		expect(server.listening).toBe(true);
-		server.close(done);
+		app.listen(8000, undefined, undefined)
+			.then(() => expect(server.listening).toBe(true))
+			.then(() => server.close(done))
 	});
 });
